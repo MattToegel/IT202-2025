@@ -19,9 +19,9 @@ function transformText($arr, $arrayNumber) {
     // Challenge 1: Remove non-alphanumeric characters except spaces
     // Challenge 2: Convert text to Title Case
     // Challenge 3: Trim leading/trailing spaces and remove duplicate spaces
-    // Result 1-3: Assign final phrase to `$modifiedPhrase`
+    // Result 1-3: Assign final phrase to `$placeholderForModifiedPhrase`
     // Challenge 4 (extra credit): Extract middle 3 characters (beginning starts at middle of phrase),
-    // assign to `$middleCharacters`
+    // assign to `$placeholderForMiddleCharacters`
     // if not enough characters assign "Not enough characters"
 
     // Step 1: sketch out plan using comments (include ucid and date)
