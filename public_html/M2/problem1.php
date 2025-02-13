@@ -22,6 +22,9 @@ function printOdds($arr, $arrayNumber)
     echo "Output Array: ";
     // Start Solution Edits
 
+    // code that iterates through an array
+    // code that handles the necessary check
+    // code that prints the value
 
     // End Solution Edits
     echo "<br>______________________________________<br>";
