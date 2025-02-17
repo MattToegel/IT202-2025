@@ -1,6 +1,10 @@
 <?php
 function printArrayInfo($arr, $arrayNumber) {
-    echo "<p style='color: blue;'>Problem {$arrayNumber}: Original Array: " . implode(", ", $arr) . "</p>";
+    echo "<div style='color: blue;display: ruby-text'>Problem {$arrayNumber}: Original Array: ";
+    foreach($arr as $a){
+        echo "<pre><code>[$a]</code></pre>";
+    }
+    echo "</div>";
 }
 function printHeader($ucid, $problem) {
     $currentDT = date("Y-m-d H:i:s");
@@ -56,10 +60,16 @@ function printOutputWithType($arr) {
     echo implode(", ", $output);
 }
 function printStringTransformations($index, $modifiedPhrase, $middleCharacters) {
-    echo "<p>Index[{$index}] \"{$modifiedPhrase}\" | Middle: \"{$middleCharacters}\"</p>";
+    echo("<p>Index[{$index}] \"<pre>{$modifiedPhrase}</pre>\" | Middle: \"<pre>{$middleCharacters}</pre>\"</p>");
 }
 function printArrayInfoBasic($arr, $arrayNumber) {
-    echo "<p style='color: blue;'>Problem {$arrayNumber}: Original Array: " . implode(", ", array_map(fn($item) => "\"$item\"", $arr)) . "</p>";
+    echo "<div style='color: blue;display: ruby-text'>Problem {$arrayNumber}: Original Array: ";
+     //. implode(", ", array_map(fn($item) => "<code>[\"$item\"]</code>", $arr)) . "</p>";
+    foreach($arr as $a){
+        echo "<pre><code>[$a]</code></pre>";
+    }
+    echo "</div>";
+    
 }
 
 ?>
