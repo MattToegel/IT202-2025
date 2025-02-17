@@ -1,0 +1,26 @@
+* {
+    margin: 0; /* Don't edit */
+    padding: 0; /* Don't edit */
+    box-sizing: border-box; /* Don't edit */
+}
+
+header,
+footer {
+    background-color: #190f3d; /* Don't edit */
+    color: white; /* Don't edit */
+    
+}
+
+main {
+    background: #326345; /* Don't edit */
+    color: white; /* Don't edit */
+}
+.panel{
+    background-color: aqua /* Don't edit */;
+}
+#left-sidebar{
+    background-color: blueviolet;
+}
+#right-sidebar{
+    background-color: coral;
+}

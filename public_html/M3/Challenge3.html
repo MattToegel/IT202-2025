@@ -1,0 +1,59 @@
+<!--
+Challenge 3: Carousel Layout with Swiping
+-----------------------------------------
+Requirements:
+    Using CSS adjust the layout per the following rules
+    1. Header should be at the top
+    2. Carousel should take up full width
+    3. Buttons should be centered
+    Using JavaScript solve the following
+    1. Attach appropriate event listeners to each button
+    2. Cycle through each panel showing only 1 at a time
+    3. Ensure that the panels loop when reaching the last or first one
+    4. Extra credit: Allow mouse swipe on the carousel to cycle through the panels similar to how the buttons would work 
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carousel UI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Edit your UCID here -->
+    <header>Header Section (mt85)</header>
+    <!-- Don't make any other edits to the HTML -->
+    <nav>
+        <button>Previous</button>
+        <button>Next</button>
+    </nav>
+
+    <div class="carousel">
+        <div class="carousel-container">
+            <div class="panel">Panel 1: HTML Forms</div>
+            <div class="panel">Panel 2: CSS Grid</div>
+            <div class="panel">Panel 3: JavaScript Events</div>
+            <div class="panel">Panel 4: Responsive Design</div>
+            <div class="panel">Panel 5: Accessibility Best Practices</div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script>
+    /** Ignore this content**/
+    let header = document.querySelector("header");
+    header.innerText += " " + new Date().toLocaleString("en-US");
+</script>
+
+<script>
+    /* Solve the button logic here by finding and attaching an appropriate event listener and logic*/
+</script>
+
+<style>
+    /* You're free to make whatever edits you need here, just don't override anything in the styles.css */
+</style>
