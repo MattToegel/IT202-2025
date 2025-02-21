@@ -1,0 +1,77 @@
+<!--
+Challenge 2: Sidebar Layout with Collapsing Sidebars
+-----------------------------------------------------
+Requirements:
+ Using CSS, adjust the layout per the following
+ Challenge 1: Header is at the top
+ Challenge 2: Content takes up the rest of the height
+ Challenge 3: Both sidebars docked to the respective side and take up 15% width; Content area should utilize the remaining width
+ Using JavaScript complete the following
+ Challenge 4: Attach the appropriate event listener to the buttons
+ Challenge 5: Individual toggle the respective panel between collapsed and uncollapsed 
+ (Don't lose the button in the process)
+ Challenge 6: The content should adjust based on the status of the respective sidebars
+ (i.e., take up more left, right, or both space)
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar Layout</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Edit your UCID here -->
+    <header>Header Section (mt85)</header>
+    <!-- Don't make any other edits to the HTML -->
+    <div class="container">
+        <aside id="left-sidebar">
+            <button>&gt;</button>
+            <ul>
+                <li>Item 1</li>
+                <li>Item 2</li>
+                <li>Item 3</li>
+            </ul>
+        </aside>
+
+        <main>
+            <h2>Lorem Ipsum</h2>
+            <p>Praesent arcu neque, ornare vitae dolor eget, dapibus sagittis ante. Donec vehicula mi a finibus
+                malesuada. Vivamus dictum nisl a felis varius, id sodales turpis fringilla. In elit urna, rhoncus at
+                turpis ut, pellentesque iaculis odio. Nam eu felis molestie, eleifend dolor id, bibendum mi. Donec
+                pellentesque sem at sapien bibendum, quis aliquam nibh aliquam. In facilisis est sapien, ut accumsan
+                arcu rutrum id. Fusce a varius libero, at varius ex. Donec odio tellus, finibus eget quam ac, maximus
+                consequat neque.</p>
+        </main>
+
+        <aside id="right-sidebar">
+            <button>&lt;</button>
+            <ul>
+                <li>Item 1</li>
+                <li>Item 2</li>
+                <li>Item 3</li>
+            </ul>
+        </aside>
+    </div>
+</body>
+
+</html>
+
+<script>
+    /** Ignore this content**/
+    let header = document.querySelector("header");
+    header.innerText += " " + new Date().toLocaleString("en-US");
+</script>
+
+<script>
+    /* Solve the button logic here by finding and attaching an appropriate event listener and logic*/
+</script>
+
+<style>
+    /* You're free to make whatever edits you need here, just don't override anything in the styles.css */
+</style>
