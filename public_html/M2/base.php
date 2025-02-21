@@ -4,7 +4,7 @@ function printArrayInfo($arr, $arrayNumber) {
     foreach($arr as $a){
         echo "<pre><code>[$a]</code></pre>";
     }
-    echo "</div>";
+    echo "</div><br>";
 }
 function printHeader($ucid, $problem) {
     $currentDT = date("Y-m-d H:i:s");
@@ -68,7 +68,7 @@ function printArrayInfoBasic($arr, $arrayNumber) {
     foreach($arr as $a){
         echo "<pre><code>[$a]</code></pre>";
     }
-    echo "</div>";
+    echo "</div><br>";
     
 }
 
