@@ -3,3 +3,4 @@ vendor/
 .env
 .vscode
 .DS_Store
+*_solution*

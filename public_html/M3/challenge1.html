@@ -1,0 +1,56 @@
+<!--
+Challenge 1: Full-Page Layout with Scrollable Content
+-----------------------------------------------------
+Requirements:
+ The header and footer should remain FIXED in place (top and bottom of page respectively)
+ The content area should SCROLL independently (nothing should be pushed off screen)
+ The entire page should always take up the full viewport height
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Page Layout </title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Edit your UCID here -->
+    <header>Header Section (mt85)</header>
+    <!-- Don't make any other edits to the HTML -->
+    <main>
+        <div class="content">
+            <h2>Lorem Ipsum</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id posuere felis. Pellentesque tincidunt,
+                mauris sed pretium vehicula, enim odio lacinia urna, vel blandit sapien turpis at enim. Suspendisse a
+                tortor vel nunc lobortis dapibus in id dolor. Morbi elementum ligula nec dictum fringilla. Sed sed
+                sagittis diam, et consequat lacus. Suspendisse non dui mauris. Vivamus molestie mattis libero, nec
+                placerat dolor imperdiet vitae. Etiam dapibus orci lacus, eu tristique ipsum sagittis in. Fusce
+                porttitor mi non consectetur dictum.</p>
+        </div>
+    </main>
+
+    <footer>Footer Section</footer>
+</body>
+
+</html>
+
+<script>
+    // This section is just to generate a lot of text without hard-coding it
+    // Ignore this whole script tag, it's not relevant for the challenge
+    // Don't make any edits/changes here
+    let content = document.querySelector(".content");
+    let p = content.querySelector("p");
+    for (let i = 0; i < 20; i++) {
+        let another = p.cloneNode(true);
+        content.appendChild(another);
+    }
+    let header = document.querySelector("header");
+    header.innerText += " " + new Date().toLocaleString("en-US");
+</script>
+<style>
+    /* You're free to make whatever edits you need here, just don't override anything in the styles.css */
+</style>
