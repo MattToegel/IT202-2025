@@ -11,6 +11,7 @@ For the Status part, you'll need to calculate the "days_offset" from the complet
 Filter the results where the todo item is completed and order the results by most recently completed and most recently due.
 No limit is required.
 */
+// fake solution
 $query = ""; // edit this
 $results = [];
 try {
