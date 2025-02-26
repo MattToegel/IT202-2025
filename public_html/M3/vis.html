@@ -1,0 +1,35 @@
+<!-- onsubmit is an attribute that when false is returned to it it'll prevent the form from submitting -->
+<form onsubmit="return false">
+    <label for="pw">Password:</label>
+    <input id="pw" type="password" name="password" value="my default hidden password" /> <button onclick="toggle(event)">Toggle</button>
+</form>
+<script>
+    function toggle(event) {
+        console.log(event);
+        //if a button is inside a form, its default nature is to submit the form so we must prevent that
+        event.preventDefault();
+        /* We have a number of ways of selecting the desired element (we normally just choose 1):*/
+        /* via the forms part of the DOM where we can refer to it by "name" */
+        let ele = document.forms[0].password;
+
+        /* via id */
+        ele = document.getElementById("pw");
+
+        /* via name using the document object */
+        ele = document.getElementsByName("password")[0];
+
+        /* via a querySelector (there are tons of options this way but I'll just do it by id)*/
+        ele = document.querySelector("#pw");
+
+        //now the actual JS logic
+        //first check we have the element via a basic truthy check
+        if (ele) {
+            //get the property/attribute we want to check and toggle it between text and password
+            if (ele.type === "text") {
+                ele.type = "password";
+            } else {
+                ele.type = "text";
+            }
+        }
+    }
+</script>
