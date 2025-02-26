@@ -1,0 +1,33 @@
+<!-- onsubmit is an attribute that when false is returned to it it'll prevent the form from submitting -->
+<form onsubmit="return false">
+    <label for="pw">Password:</label>
+    <!-- onchange triggers when input is done, oninput triggers as the user is typing/interacting -->
+    <input id="pw" type="password" name="password" oninput="checkPassword()" />
+    <label for="confirm">Confirm: </label>
+    <input id="confirm" type="password" name="confirm" onmouseleave="checkPassword()" />
+    <span id="output"></span>
+</form>
+<script>
+    function checkPassword() {
+        //get the elements we want to compare
+        let pw = document.getElementsByName("password")[0];
+        let confirm = document.getElementsByName("confirm")[0];
+        //make sure we have them
+        if (pw && confirm) {
+            //check lengths to see if it's valid to compare
+            if (pw.value.length > 0 && confirm.value.length > 0) {
+                //check equality
+                let isEqual = false;
+                if (pw.value === confirm.value) {
+                    isEqual = true;
+                } else {
+                    isEqual = false;
+                }
+                //let's find our output element and update the message
+                let ele = document.getElementById("output");
+                ele.innerText = "Passwords don't match";
+                ele.style.display = isEqual ? "none" : "block";
+            }
+        }
+    }
+</script>
