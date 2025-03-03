@@ -37,8 +37,8 @@ if (
     // TODO 3: validate/use
     $hasError = false;
     // Sanitize and validate email
-    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $email = sanitize_email($email);
+    if (!is_valid_email($email)) {
         echo "Invalid email address";
         $hasError = true;
     }
