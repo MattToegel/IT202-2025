@@ -75,7 +75,7 @@ if (
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
         $db = getDB(); // available due to the `require()` of `functions.php`
         // Code for inserting user data into the database
-        $stmt = $db->prepare("INSERT INTO `S25-010-Users` (email, password) VALUES (:email, :password)");
+        $stmt = $db->prepare("INSERT INTO `Users` (email, password) VALUES (:email, :password)");
         try {
             $stmt->execute([':email' => $email, ':password' => $hashed_password]);
             echo "Successfully registered!";
