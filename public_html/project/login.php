@@ -55,7 +55,7 @@ if (
     if (!$hasError) {
         //TODO 4
         $db = getDB();
-        $stmt = $db->prepare("SELECT id, email, password from `S25-010-Users` where email = :email");
+        $stmt = $db->prepare("SELECT id, email, password from `Users` where email = :email");
         try {
             $r = $stmt->execute([":email" => $email]);
             if ($r) {
