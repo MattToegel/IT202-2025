@@ -47,7 +47,7 @@ function joinArrays($users, $activities) {
     echo "<br>Joined output:<br>";
     
     // Note: use the $users and $activities variables to iterate over, don't directly touch $a1-$a4 arrays
-    // TODO add logic here to join the arrays on userId
+    // TODO Objective: Add logic to join both arrays on the userId property into one $joined array
     $joined = []; // result array
     // Start edits
     

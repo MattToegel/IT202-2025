@@ -25,7 +25,7 @@ function processBirds($birds) {
     echo "<br>Subset output:<br>";
     
     // Note: use the $birds variable to iterate over, don't directly touch $a1-$a4
-    // TODO add logic to create a new array with only name, color, and region
+    // TODO Objective: Extract the name, color, region into a separate multi-dimension array called $subset
     $subset = []; // result array
     // Start edits
     
