@@ -21,32 +21,21 @@ if (isset($_POST["symbol"])) {
     }
     // Ideally only the table name should need to change for most queries
     //update data
-    $db = getDB();
-    $query = "UPDATE `IT202-S25-Stocks` SET ";
-
-    $params = [];
-    //per record
-    foreach ($quote as $k => $v) {
-
-        if ($params) {
-            $query .= ",";
-        }
-        //be sure $k is trusted as this is a source of sql injection
-        $query .= "$k=:$k";
-        $params[":$k"] = $v;
-    }
-
-    $query .= " WHERE id = :id";
-    $params[":id"] = $id;
-    error_log("Query: " . $query);
-    error_log("Params: " . var_export($params, true));
+    $quote["id"] = $id; // add id to the stock array for the update
     try {
-        $stmt = $db->prepare($query);
-        $stmt->execute($params);
-        flash("Updated record ", "success");
+        $r = update("IT202-S25-Stocks", $quote);
+        if ($r["rowCount"]) {
+            flash("Updated " . $r["rowCount"] . " record(s)", "success");
+        } else {
+            flash("Error updating record (this can occur if no properties changed)", "warning");
+        }
     } catch (PDOException $e) {
         error_log("Something broke with the query" . var_export($e, true));
         flash("An error occurred", "danger");
+    }
+    catch(Exception $e) {
+        error_log("Something broke with the query" . var_export($e, true));
+        flash("An error occurred: " . $e->getMessage(), "danger");
     }
 }
 

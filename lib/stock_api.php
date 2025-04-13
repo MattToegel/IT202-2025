@@ -138,6 +138,9 @@ function search_companies($search){
                 unset($r[$k]);
             }
             // map/extract desired information
+            if(strlen($r["symbol"]) > 6){
+                continue; // skip if symbol is longer than 6 characters
+            }
             $data = [
                 "symbol"=>$r["symbol"],
                 "name" =>$r["name"],

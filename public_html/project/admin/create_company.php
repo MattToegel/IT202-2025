@@ -44,37 +44,20 @@ if (isset($_POST["action"])) {
     //insert data - Below should only really need the table name changes
     // the query building should work for all regular inserts
     if (count($companies) > 0) {
-        $db = getDB();
-        $query = "INSERT INTO `IT202-S25-Companies` ";
-        $columns = [];
-        $params = [];
-        //use first record to build query
-        foreach ($companies[0] as $k => $v) {
-            array_push($columns, "`$k`");
-            $params[":$k"] = $v;
+        try {
+            $r = insert("IT202-S25-Companies", $companies);
+            if ($r["lastInsertId"]) {
+                flash("Inserted record " . $r["lastInsertId"], "success");
+            } else {
+                flash("Error inserting record", "warning");
+            }
+        } catch (PDOException $e) {
+            error_log("Something broke with the query" . var_export($e, true));
+            flash("An error occurred", "danger");
         }
-        $query .= "(" . join(",", $columns) . ")";
-        $query .= "VALUES (" . join(",", array_keys($params)) . ")";
-        // generally it's best to do a bulk insert, but in this case will do one-by-one
-        // that way if one record fails, at least some records should succeed
-        foreach ($companies as $comp) {
-            foreach ($comp as $k => $v) {
-                // bind individual data; any pre-insert mapping can be done here
-                $params[":$k"] = $v;
-                if(in_array($k, ["symbol", "currency"])) {
-                    $params[":$k"] = strtoupper($v); // ensure symbol is uppercase
-                }
-            }
-            error_log("Query: " . $query);
-            error_log("Params: " . var_export($params, true));
-            try {
-                $stmt = $db->prepare($query);
-                $stmt->execute($params);
-                flash("Inserted record " . $db->lastInsertId(), "success");
-            } catch (PDOException $e) {
-                error_log("Something broke with the query" . var_export($e, true));
-                flash("An error occurred", "danger");
-            }
+        catch(Exception $e) {
+            error_log("Something broke with the query" . var_export($e, true));
+            flash("An error occurred: " . $e->getMessage(), "danger");
         }
     } else {
         flash("No company fetched or provided", "warning");

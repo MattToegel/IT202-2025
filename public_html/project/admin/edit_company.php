@@ -21,38 +21,21 @@ if (isset($_POST["symbol"])) {
     }
     // Ideally only the table name should need to change for most queries
     //update data
-    $db = getDB();
-    $query = "UPDATE `IT202-S25-Companies` SET ";
-
-    $params = [];
-    //per record
-    foreach ($company as $k => $v) {
-
-        if ($params) {
-            $query .= ",";
-        }
-        //be sure $k is trusted as this is a source of sql 
-        // can do any data transformation here
-        // Note: backticks are wrapped around the key incase your column
-        //names use reserved sql keywords
-        $query .= "`$k`=:$k";
-        $params[":$k"] = $v;
-        if(in_array($k, ["symbol", "currency"])) {
-            $params[":$k"] = strtoupper($v); // ensure symbol is uppercase
-        }
-    }
-
-    $query .= " WHERE id = :id";
-    $params[":id"] = $id;
-    error_log("Query: " . $query);
-    error_log("Params: " . var_export($params, true));
+    $company["id"] = $id; // add id to the company array for the update
     try {
-        $stmt = $db->prepare($query);
-        $stmt->execute($params);
-        flash("Updated record ", "success");
+        $r = update("IT202-S25-Companies", $company);
+        if ($r["rowCount"]) {
+            flash("Updated " . $r["rowCount"] . " record(s)", "success");
+        } else {
+            flash("Error updating record (this can occur if no properties changed)", "warning");
+        }
     } catch (PDOException $e) {
         error_log("Something broke with the query" . var_export($e, true));
         flash("An error occurred", "danger");
+    }
+    catch(Exception $e) {
+        error_log("Something broke with the query" . var_export($e, true));
+        flash("An error occurred: " . $e->getMessage(), "danger");
     }
 }
 
