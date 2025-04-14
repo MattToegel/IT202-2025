@@ -131,11 +131,15 @@ function search_companies($search){
         $result = $result["bestMatches"];
         $transformedResult = [];
         foreach($result as $r){
+            
             // fixed keys
             foreach($r as $k=>$v){
                 $nk = str_replace(" ", "_", explode(" ", $k, 2)[1]);
                 $r[$nk] = $v;
                 unset($r[$k]);
+            }
+            if(strlen($r["symbol"]) > 6){
+                continue;
             }
             // map/extract desired information
             $data = [
