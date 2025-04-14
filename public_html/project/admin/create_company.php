@@ -45,8 +45,9 @@ if (isset($_POST["action"])) {
     // the query building should work for all regular inserts
     if (count($companies) > 0) {
         try {
-            $r = insert("IT202-S25-Companies", $companies);
-            if ($r["lastInsertId"]) {
+            $r = insert("IT202-S25-Companies", $companies, ["debug"=>true,"update_duplicate"=>true]);
+            flash("Data: " . var_export($r, true));
+            if ($r["lastInsertId"] || $r["rowCount"] > 0) {
                 flash("Inserted record " . $r["lastInsertId"], "success");
             } else {
                 flash("Error inserting record", "warning");
