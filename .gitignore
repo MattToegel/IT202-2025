@@ -4,3 +4,4 @@ vendor/
 .vscode
 .DS_Store
 *_solution*
+test.php
