@@ -32,8 +32,7 @@ if (isset($_POST["symbol"])) {
     } catch (PDOException $e) {
         error_log("Something broke with the query" . var_export($e, true));
         flash("An error occurred", "danger");
-    }
-    catch(Exception $e) {
+    } catch (Exception $e) {
         error_log("Something broke with the query" . var_export($e, true));
         flash("An error occurred: " . $e->getMessage(), "danger");
     }
@@ -59,44 +58,85 @@ if ($id > -1) {
     flash("Invalid id passed", "danger");
     die(header("Location:" . get_url("admin/list_stocks.php")));
 }
+// represent form as data
+$form = [
+    [
+        "type" => "text",
+        "id" => "symbol",
+        "name" => "symbol",
+        "label" => "Stock Symbol",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "number",
+        "id" => "open",
+        "name" => "open",
+        "label" => "Stock Open",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "number",
+        "id" => "low",
+        "name" => "low",
+        "label" => "Stock Low",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "number",
+        "id" => "high",
+        "name" => "high",
+        "label" => "Stock High",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "number",
+        "id" => "price",
+        "name" => "price",
+        "label" => "Stock Current Price",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "number",
+        "id" => "change_percent",
+        "name" => "change_percent",
+        "label" => "Stock % change",
+        "rules" => ["required" => true, "step" => "0.01"]
+    ],
+    [
+        "type" => "number",
+        "id" => "volume",
+        "name" => "volume",
+        "label" => "Stock Volume",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "date",
+        "id" => "latest_trading_day",
+        "name" => "latest_trading_day",
+        "label" => "Stock Date",
+        "rules" => ["required" => true]
+    ]
+];
+if ($stock) {
+    // map the result data to the form (sticky forms)
+    $keys = array_keys($stock);
 
+    foreach ($form as $k => $v) {
+        if (in_array($v["name"], $keys)) {
+            $form[$k]["value"] = $stock[$v["name"]];
+        }
+    }
+}
 ?>
 <div class="container-fluid">
     <h3>Edit Stock</h3>
     <form method="POST">
-        <div class="mb-3">
-            <label for="symbol">Stock Symbol</label>
-            <input type="text" name="symbol" id="symbol" placeholder="Stock Symbol" required value="<?php se($stock, "symbol"); ?>">
-        </div>
-        <div class="mb-3">
-            <label for="open">Stock Open</label>
-            <input type="number" name="open" id="open" placeholder="Stock Open" required value="<?php se($stock, "open"); ?>">
-        </div>
-        <div class="mb-3">
-            <label for="low">Stock Low</label>
-            <input type="number" name="low" id="low" placeholder="Stock Low" required value="<?php se($stock, "low"); ?>">
-        </div>
-        <div class="mb-3">
-            <label for="high">Stock High</label>
-            <input type="number" name="high" id="high" placeholder="Stock High" required value="<?php se($stock, "high"); ?>">
-        </div>
-        <div class="mb-3">
-            <label for="price">Stock Current Price</label>
-            <input type="number" name="price" id="price" placeholder="Stock Current Price" required value="<?php se($stock, "price"); ?>">
-        </div>
-        <div class="mb-3">
-            <label for="change_percent">Stock % change</label>
-            <input type="number" step="0.01" name="change_percent" id="change_percent" placeholder="Stock % change" required value="<?php se($stock, "change_percent"); ?>">
-        </div>
-        <div class="mb-3">
-            <label for="volume">Stock Volume</label>
-            <input type="number" name="volume" id="volume" placeholder="Stock Volume" required value="<?php se($stock, "volume"); ?>">
-        </div>
-        <div class="mb-3">
-            <label for="latest_trading_day">Stock Date</label>
-            <input type="date" name="latest_trading_day" id="latest_trading_day" placeholder="Stock Date" required value="<?php se($stock, "latest_trading_day"); ?>">
-        </div>
-        <input type="submit" value="Update" class="btn btn-primary">
+        <?php foreach ($form as $field): ?>
+            <div class="mb-3">
+                <?php render_input($field); ?>
+            </div>
+        <?php endforeach; ?>
+        <?php render_button(["text" => "Update", "type" => "submit"]); ?>
     </form>
 
 </div>

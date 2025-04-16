@@ -25,132 +25,87 @@ session_start();
 
 ?>
 <!-- include css and js files -->
+<!-- Include Bootstrap CSS and JS before custom content so it can be reused or overriden -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 <link rel="stylesheet" href="<?php echo get_url('styles.css'); ?>">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 <script src="<?php echo get_url('helpers.js'); ?>"></script>
-<nav class="navbar">
-    <ul>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <!-- Replace with your ucid -->
+        <a class="navbar-brand text-uppercase" href="#">mt85</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <?php if (is_logged_in()) : ?>
-            <li><a href="<?php echo get_url('home.php'); ?>">Home</a></li>
-            <li><a href="<?php echo get_url('profile.php'); ?>">Profile</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('home.php'); ?>">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('profile.php'); ?>">Profile</a>
+                    </li>
                 <?php endif; ?>
                 <?php if (!is_logged_in()) : ?>
-            <li><a href="<?php echo get_url('login.php'); ?>">Login</a></li>
-            <li><a href="<?php echo get_url('register.php'); ?>">Register</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('login.php'); ?>">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('register.php'); ?>">Register</a>
+                    </li>
                 <?php endif; ?>
                 <?php if (has_role("Admin")) : ?>
-            <div class="dropdown">
-                <button class="dropbtn">Roles
-                    <i class="fa fa-caret-down"></i>
-                </button>
-                <div class="dropdown-content">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Roles
+                        </a>
+                        <ul class="dropdown-menu">
 
-                    <li><a href="<?php echo get_url('admin/create_role.php'); ?>">Create Role</a></li>
-                    <li><a href="<?php echo get_url('admin/list_roles.php'); ?>">List Roles</a></li>
-                    <li><a href="<?php echo get_url('admin/assign_roles.php'); ?>">Assign Roles</a></li>
+                            <li><a class="dropdown-item" aria-current="page" href="<?php echo get_url('admin/create_role.php'); ?>">Create Role</a>
+                            </li>
+                            <li><a class="dropdown-item" aria-current="page" href="<?php echo get_url('admin/list_roles.php'); ?>">List Roles</a>
+                            </li>
+                            <li><a class="dropdown-item" aria-current="page" href="<?php echo get_url('admin/assign_roles.php'); ?>">Assign Roles</a>
+                            </li>
 
-                </div>
-            </div>
+                        </ul>
+                    </li>
                 <?php endif; ?>
                 <?php if (has_role("Admin")) : ?>
-            <div class="dropdown">
-                <button class="dropbtn">Stocks
-                    <i class="fa fa-caret-down"></i>
-                </button>
-                <div class="dropdown-content">
-                    <li><a href="<?php echo get_url('admin/create_stock.php'); ?>">Create Stock</a></li>
-                    <li><a href="<?php echo get_url('admin/list_stocks.php'); ?>">List Stock</a></li>
-                </div>
-            </div>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Stocks
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" aria-current="page" href="<?php echo get_url('admin/create_stock.php'); ?>">Create Stock</a>
+                            </li>
+                            <li><a class="dropdown-item" aria-current="page" href="<?php echo get_url('admin/list_stocks.php'); ?>">List Stock</a>
+                            </li>
+                        </ul>
+                    </li>
                 <?php endif; ?>
                 <?php if (has_role("Admin")) : ?>
-            <div class="dropdown">
-                <button class="dropbtn">Companies
-                    <i class="fa fa-caret-down"></i>
-                </button>
-                <div class="dropdown-content">
-                    <li><a href="<?php echo get_url('admin/create_company.php'); ?>">Create Company</a></li>
-                    <li><a href="<?php echo get_url('admin/list_companies.php'); ?>">List Companies</a></li>
-                </div>
-            </div>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Companies
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="<?php echo get_url('admin/create_company.php'); ?>">Create Company</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="<?php echo get_url('admin/list_companies.php'); ?>">List Companies</a>
+                            </li>
+                        </ul>
+                    </li>
                 <?php endif; ?>
                 <?php if (is_logged_in()) : ?>
-            <li><a href="<?php echo get_url('logout.php'); ?>">Logout</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('logout.php'); ?>">Logout</a>
+                    </li>
                 <?php endif; ?>
             </ul>
+        </div>
+    </div>
 </nav>
-
-<style>
-    /* From https://www.w3schools.com/howto/howto_css_dropdown_navbar.asp */
-    /* Navbar container */
-    .navbar {
-        overflow: hidden;
-        background-color: #333;
-        font-family: Arial;
-    }
-
-    /* Links inside the navbar */
-    .navbar a {
-        float: left;
-        font-size: 16px;
-        color: white;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
-    }
-
-    /* The dropdown container */
-    .dropdown {
-        float: left;
-        overflow: hidden;
-    }
-
-    /* Dropdown button */
-    .dropdown .dropbtn {
-        font-size: 16px;
-        border: none;
-        outline: none;
-        color: white;
-        padding: 14px 16px;
-        background-color: inherit;
-        font-family: inherit;
-        /* Important for vertical align on mobile phones */
-        margin: 0;
-        /* Important for vertical align on mobile phones */
-    }
-
-    /* Add a red background color to navbar links on hover */
-    .navbar a:hover,
-    .dropdown:hover .dropbtn {
-        background-color: red;
-    }
-
-    /* Dropdown content (hidden by default) */
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #f9f9f9;
-        min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-        z-index: 1;
-    }
-
-    /* Links inside the dropdown */
-    .dropdown-content a {
-        float: none;
-        color: black;
-        padding: 12px 16px;
-        text-decoration: none;
-        display: block;
-        text-align: left;
-    }
-
-    /* Add a grey background color to dropdown links on hover */
-    .dropdown-content a:hover {
-        background-color: #ddd;
-    }
-
-    /* Show the dropdown menu on hover */
-    .dropdown:hover .dropdown-content {
-        display: block;
-    }
-</style>

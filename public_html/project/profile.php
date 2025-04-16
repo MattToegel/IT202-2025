@@ -100,65 +100,95 @@ if (isset($_POST["save"])) {
 <?php
 $email = get_user_email();
 $username = get_username();
+
+// represent form as data
+$form = [
+    [
+        "type" => "email",
+        "id" => "email",
+        "name" => "email",
+        "label" => "Email",
+        "value" => se($email, null, "", false),
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "text",
+        "id" => "username",
+        "name" => "username",
+        "label" => "Username",
+        "value" => se($username, null, "", false),
+        "rules" => ["required" => true]
+    ],
+    // Password reset section
+    [
+        "type" => "password",
+        "id" => "cp",
+        "name" => "currentPassword",
+        "label" => "Current Password",
+        "rules" => ["minlength" => 8]
+    ],
+    [
+        "type" => "password",
+        "id" => "np",
+        "name" => "newPassword",
+        "label" => "New Password",
+        "rules" => ["minlength" => 8]
+    ],
+    [
+        "type" => "password",
+        "id" => "conp",
+        "name" => "confirmPassword",
+        "label" => "Confirm Password",
+        "rules" => ["minlength" => 8]
+    ]
+];
+
 ?>
-<form method="POST" onsubmit="return validate(this);">
-    <div class="mb-3">
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" value="<?php se($email); ?>" required />
-    </div>
-    <div class="mb-3">
-        <label for="username">Username</label>
-        <input type="text" name="username" id="username" value="<?php se($username); ?>" />
-    </div>
-    <!-- DO NOT PRELOAD PASSWORD -->
-    <div>Password Reset</div>
-    <div class="mb-3">
-        <label for="cp">Current Password</label>
-        <input type="password" name="currentPassword" id="cp" />
-    </div>
-    <div class="mb-3">
-        <label for="np">New Password</label>
-        <input type="password" name="newPassword" id="np" />
-    </div>
-    <div class="mb-3">
-        <label for="conp">Confirm Password</label>
-        <input type="password" name="confirmPassword" id="conp" />
-    </div>
-    <input type="submit" value="Update Profile" name="save" />
-</form>
+<div class="container-fluid">
+    <h3>Profile</h3>
 
-<script>
-    function validate(form) {
-        let pw = form.newPassword.value;
-        let con = form.confirmPassword.value;
-        let cp = form.currentPassword.value;
-        let isValid = true;
-        //TODO add other client side validation....
+    <form method="POST" onsubmit="return validate(this);">
+        <?php foreach ($form as $field): ?>
+            <div class="mb-3">
+                <?php render_input($field); ?>
+            </div>
+        <?php endforeach; ?>
+        <?php render_button(["text" => "Update Profile", "type" => "submit"]); ?>
+    </form>
 
-        //example of using flash via javascript
-        //find the flash container, create a new element, appendChild
-        if (pw && con && cp) {
-            if (!isValidPassword(pw)) {
-                isValid = false;
-                flash("New Password must be at least 8 characters long", "danger");
+    <script>
+        function validate(form) {
+            let pw = form.newPassword.value;
+            let con = form.confirmPassword.value;
+            let cp = form.currentPassword.value;
+            let isValid = true;
+            //TODO add other client side validation....
+
+            //example of using flash via javascript
+            //find the flash container, create a new element, appendChild
+            if (pw && con && cp) {
+                if (!isValidPassword(pw)) {
+                    isValid = false;
+                    flash("New Password must be at least 8 characters long", "danger");
+                }
+                if (!isValidPassword(con)) {
+                    isValid = false;
+                    flash("Confirm Password must be at least 8 characters long", "danger");
+                }
+                if (!isValidPassword(cp)) {
+                    isValid = false;
+                    flash("Current Password must be at least 8 characters long", "danger");
+                }
+                if (pw !== con) {
+                    flash("Password and Confrim password must match", "warning");
+                    isValid = false;
+                }
             }
-            if (!isValidPassword(con)) {
-                isValid = false;
-                flash("Confirm Password must be at least 8 characters long", "danger");
-            }
-            if (!isValidPassword(cp)) {
-                isValid = false;
-                flash("Current Password must be at least 8 characters long", "danger");
-            }
-            if (pw !== con) {
-                flash("Password and Confrim password must match", "warning");
-                isValid = false;
-            }
+
+            return isValid;
         }
-
-        return isValid;
-    }
-</script>
+    </script>
+</div>
 <?php
 require_once(__DIR__ . "/../../partials/flash.php");
 ?>

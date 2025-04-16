@@ -43,7 +43,7 @@ if (isset($_POST["action"])) {
     //insert data - Below should only really need the table name changes
     // the query building should work for all regular inserts
     try {
-        $r = insert("IT202-S25-Stocks", $quote, ["update_duplicate"=>true]);
+        $r = insert("IT202-S25-Stocks", $quote, ["update_duplicate" => true]);
         if ($r["lastInsertId"]) {
             flash("Inserted record " . $r["lastInsertId"], "success");
         } else {
@@ -52,12 +52,70 @@ if (isset($_POST["action"])) {
     } catch (PDOException $e) {
         error_log("Something broke with the query" . var_export($e, true));
         flash("An error occurred", "danger");
-    }
-    catch(Exception $e) {
+    } catch (Exception $e) {
         error_log("Something broke with the query" . var_export($e, true));
         flash("An error occurred: " . $e->getMessage(), "danger");
     }
 }
+// represent form as data
+$form = [
+    [
+        "type" => "text",
+        "id" => "symbol",
+        "name" => "symbol",
+        "label" => "Stock Symbol",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "number",
+        "id" => "open",
+        "name" => "open",
+        "label" => "Stock Open",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "number",
+        "id" => "low",
+        "name" => "low",
+        "label" => "Stock Low",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "number",
+        "id" => "high",
+        "name" => "high",
+        "label" => "Stock High",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "number",
+        "id" => "price",
+        "name" => "price",
+        "label" => "Stock Current Price",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "number",
+        "id" => "change_percent",
+        "name" => "change_percent",
+        "label" => "Stock % change",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "number",
+        "id" => "volume",
+        "name" => "volume",
+        "label" => "Stock Volume",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "date",
+        "id" => "latest_trading_day",
+        "name" => "latest_trading_day",
+        "label" => "Stock Date",
+        "rules" => ["required" => true]
+    ]
+];
 
 ?>
 <div class="container-fluid">
@@ -72,50 +130,22 @@ if (isset($_POST["action"])) {
     </ul>
     <div id="fetch" class="tab-target">
         <form method="POST">
-            <div>
-                <label for="symbol">Stock Symbol</label>
-                <input type="search" name="symbol" id="symbol" placeholder="Stock Symbol" required>
+            <div class="mb-3">
+                <?php render_input(["type" => "text", "name" => "symbol", "id" => "symbol", "label" => "Stock Symbol", "rules" => ["required" => true]]); ?>
             </div>
             <input type="hidden" name="action" value="fetch">
-            <input type="submit" value="Fetch" class="btn btn-primary">
+            <?php render_button(["text" => "Fetch", "type" => "submit"]); ?>
         </form>
     </div>
     <div id="create" style="display: none;" class="tab-target">
         <form method="POST">
-            <div class="mb-3">
-                <label for="symbol">Stock Symbol</label>
-                <input type="text" name="symbol" id="symbol" placeholder="Stock Symbol" required>
-            </div>
-            <div class="mb-3">
-                <label for="open">Stock Open</label>
-                <input type="number" name="open" id="open" placeholder="Stock Open" required>
-            </div>
-            <div class="mb-3">
-                <label for="low">Stock Low</label>
-                <input type="number" name="low" id="low" placeholder="Stock Low" required>
-            </div>
-            <div class="mb-3">
-                <label for="high">Stock High</label>
-                <input type="number" name="high" id="high" placeholder="Stock High" required>
-            </div>
-            <div class="mb-3">
-                <label for="price">Stock Current Price</label>
-                <input type="number" name="price" id="price" placeholder="Stock Current Price" required>
-            </div>
-            <div class="mb-3">
-                <label for="change_percent">Stock % change</label>
-                <input type="number" name="change_percent" id="change_percent" placeholder="Stock % change" required>
-            </div>
-            <div class="mb-3">
-                <label for="volume">Stock Volume</label>
-                <input type="number" name="volume" id="volume" placeholder="Stock Volume" required>
-            </div>
-            <div class="mb-3">
-                <label for="latest_trading_day">Stock Date</label>
-                <input type="date" name="latest_trading_day" id="latest_trading_day" placeholder="Stock Date" required>
-            </div>
+            <?php foreach ($form as $field): ?>
+                <div class="mb-3">
+                    <?php render_input($field); ?>
+                </div>
+            <?php endforeach; ?>
             <input type="hidden" name="action" value="create">
-            <input type="submit" value="Create" class="btn btn-primary">
+            <?php render_button(["text" => "Create", "type" => "submit"]); ?>
         </form>
     </div>
 </div>

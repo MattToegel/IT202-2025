@@ -23,34 +23,9 @@ try {
     error_log("Error fetching stocks " . var_export($e, true));
     flash("Unhandled error occurred", "danger");
 }
+$table = ["data" => $results, "edit_url" => get_url("admin/edit_stock.php"), "classes" => "btn btn-secondary"];
 ?>
 <div class="container-fluid">
     <h3>List Stocks</h3>
-    <?php if (count($results) == 0) : ?>
-    <p>No results to show</p>
-<?php else : ?>
-    <table class="table">
-        <?php foreach ($results as $index => $record) : ?>
-            <?php if ($index == 0) : ?>
-                <thead>
-                    <?php foreach ($record as $column => $value) : ?>
-                        <th><?php se($column); ?></th>
-                    <?php endforeach; ?>
-                    <th>Actions</th>
-                </thead>
-            <?php endif; ?>
-            <tr>
-                <?php foreach ($record as $column => $value) : ?>
-                    <td><?php se($value, null, "N/A"); ?></td>
-                <?php endforeach; ?>
-
-
-                <td>
-                    <a href="<?php echo get_url("admin/edit_stock.php");?>?id=<?php se($record, "id"); ?>">Edit</a>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-<?php endif; ?>
-
+    <?php render_table($table); ?>
 </div>

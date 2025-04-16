@@ -1,34 +1,26 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 reset_session();
-
-// represent form as data
-$form = [
-    ["type" => "email", "id" => "email", "name" => "email", "label" => "Email", "rules" => ["required" => true]],
-    [
-        "type" => "text",
-        "id" => "username",
-        "name" => "username",
-        "label" => "Username",
-        "rules" => [
-            "required" => true,
-            "maxlength" => 30,
-            "title" => "3-16 lowercase letters, numbers, underscores, or hyphens"
-        ]
-    ],
-    ["type" => "password", "id" => "password", "name" => "password", "label" => "Password", "rules" => ["required" => true, "minlength" => 8]],
-    ["type" => "password", "id" => "confirm", "name" => "confirm", "label" => "Confirm Password", "rules" => ["required" => true, "minlength" => 8]],
-];
 ?>
 <div class="container-fluid">
-    <h3>Regiser</h3>
     <form onsubmit="return validate(this)" method="POST">
-        <?php foreach ($form as $field): ?>
-            <div class="mb-3">
-                <?php render_input($field); ?>
-            </div>
-        <?php endforeach; ?>
-        <?php render_button(["text" => "Register", "type" => "submit"]); ?>
+        <div class="mb-3">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-control" type="email" name="email" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="username">Username</label>
+            <input class="form-control" type="text" name="username" required maxlength="30" />
+        </div class="mb-3">
+        <div class="mb-3">
+            <label class="form-label" for="pw">Password</label>
+            <input class="form-control" type="password" id="pw" name="password" required minlength="8" />
+        </div class="mb-3">
+        <div class="mb-3">
+            <label class="form-label" for="confirm">Confirm</label>
+            <input class="form-control" type="password" name="confirm" required minlength="8" />
+        </div>
+        <input class="btn btn-primary" type="submit" value="Register" />
     </form>
 </div>
 <script>

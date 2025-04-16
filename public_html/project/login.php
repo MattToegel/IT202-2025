@@ -1,29 +1,49 @@
 <?php
 require_once(__DIR__ . "/../../partials/nav.php");
+
+// represent form as data
+$form = [
+    [
+        "type" => "text",
+        "id" => "email",
+        "name" => "email",
+        "label" => "Email/Username",
+        "value" => se($_POST, "email", "", false),
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "password",
+        "id" => "pw",
+        "name" => "password",
+        "label" => "Password",
+        "rules" => ["required" => true, "minlength" => 8]
+    ]
+];
+
 ?>
-<form onsubmit="return validate(this)" method="POST">
-    <div>
-        <label for="email">Email/Username</label>
-        <input type="text" name="email" required value="<?php se($_POST, "email");?>"/>
-    </div>
-    <div>
-        <label for="pw">Password</label>
-        <input type="password" id="pw" name="password" required minlength="8" />
-    </div>
-    <input type="submit" value="Login" />
-</form>
-<script>
-    function validate(form) {
-        //TODO 1: implement JavaScript validation
-        //ensure it returns false for an error and true for success
-        let isValid = true;
-        if(!isValidPassword(form.password.value)) {
-            isValid = false;
-            flash("Password must be at least 8 characters long", "danger");
+<div class="container-fluid">
+    <h3>Login</h3>
+    <form onsubmit="return validate(this)" method="POST">
+        <?php foreach ($form as $field): ?>
+            <div class="mb-3">
+                <?php render_input($field); ?>
+            </div>
+        <?php endforeach; ?>
+        <?php render_button(["text" => "Login", "type" => "submit"]); ?>
+    </form>
+    <script>
+        function validate(form) {
+            //TODO 1: implement JavaScript validation
+            //ensure it returns false for an error and true for success
+            let isValid = true;
+            if (!isValidPassword(form.password.value)) {
+                isValid = false;
+                flash("Password must be at least 8 characters long", "danger");
+            }
+            return isValid;
         }
-        return isValid;
-    }
-</script>
+    </script>
+</div>
 <?php
 //TODO 2: add PHP Code
 if (isset($_POST["email"]) && isset($_POST["password"])) {
@@ -36,10 +56,10 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
         flash("Email must be provided <br>");
         $hasError = true;
     }
-    
+
     if (str_contains($email, "@")) {
         $email = sanitize_email($email);
-        
+
         if (!is_valid_email($email)) {
             flash("Invalid email address");
             $hasError = true;

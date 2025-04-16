@@ -27,3 +27,4 @@ require(__DIR__ . "/get_url.php");
 require(__DIR__ . "/api_helper.php");
 require(__DIR__ . "/stock_api.php");
 require(__DIR__ . "/db_helpers.php");
+require(__DIR__ . "/render_functions.php");

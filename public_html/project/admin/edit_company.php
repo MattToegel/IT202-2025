@@ -13,7 +13,7 @@ $id = se($_GET, "id", -1, false);
 //TODO handle stock fetch
 if (isset($_POST["symbol"])) {
     foreach ($_POST as $k => $v) {
-        if (!in_array($k, ["symbol", "name", "type","region","currency"])) {
+        if (!in_array($k, ["symbol", "name", "type", "region", "currency"])) {
             unset($_POST[$k]);
         }
         $company = $_POST;
@@ -32,8 +32,7 @@ if (isset($_POST["symbol"])) {
     } catch (PDOException $e) {
         error_log("Something broke with the query" . var_export($e, true));
         flash("An error occurred", "danger");
-    }
-    catch(Exception $e) {
+    } catch (Exception $e) {
         error_log("Something broke with the query" . var_export($e, true));
         flash("An error occurred: " . $e->getMessage(), "danger");
     }
@@ -59,33 +58,63 @@ if ($id > -1) {
     flash("Invalid id passed", "danger");
     die(header("Location:" . get_url("admin/list_stocks.php")));
 }
+$form = [
+    [
+        "type" => "text",
+        "id" => "symbol",
+        "name" => "symbol",
+        "label" => "Company Symbol",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "text",
+        "id" => "name",
+        "name" => "name",
+        "label" => "Company Name",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "text",
+        "id" => "type",
+        "name" => "type",
+        "label" => "Company Type",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "text",
+        "id" => "region",
+        "name" => "region",
+        "label" => "Company Region",
+        "rules" => ["required" => true]
+    ],
+    [
+        "type" => "text",
+        "id" => "currency",
+        "name" => "currency",
+        "label" => "Company Currency",
+        "rules" => ["required" => true, "maxlength" => 4]
+    ]
+];
+if ($company) {
+    $keys = array_keys($company);
 
+    foreach ($form as $k => $v) {
+        if (in_array($v["name"], $keys)) {
+            $form[$k]["value"] = $company[$v["name"]];
+        }
+    }
+}
 ?>
 <div class="container-fluid">
     <h3>Edit Company</h3>
     <form method="POST">
+        <?php foreach ($form as $field): ?>
             <div class="mb-3">
-                <label for="symbol">Company Symbol</label>
-                <input type="text" name="symbol" id="symbol" placeholder="Company Symbol" required value="<?php se($company, "symbol"); ?>">
+                <?php render_input($field); ?>
             </div>
-            <div class="mb-3">
-                <label for="name">Company Name</label>
-                <input type="text" name="name" id="name" placeholder="Company Name" required value="<?php se($company, "name"); ?>">
-            </div>
-            <div class="mb-3">
-                <label for="type">Company Type</label>
-                <input type="text" name="type" id="type" placeholder="Company Type" required value="<?php se($company, "type"); ?>">
-            </div>
-            <div class="mb-3">
-                <label for="region">Company Region</label>
-                <input type="text" name="region" id="region" placeholder="Company Region" required value="<?php se($company, "region"); ?>">
-            </div>
-            <div class="mb-3">
-                <label for="currency">Company Currency</label>
-                <input type="text" maxlength="4" name="currency" id="currency" placeholder="Company Currency" required value="<?php se($company, "currency"); ?>">
-            </div>
-            <input type="submit" value="Update" class="btn btn-primary">
-        </form>
+        <?php endforeach; ?>
+        <?php render_button(["text" => "Update", "type" => "submit"]); ?>
+    </form>
 
 </div>
 
