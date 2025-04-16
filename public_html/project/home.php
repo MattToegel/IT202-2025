@@ -12,10 +12,10 @@ $params = [];
 $query = "SELECT id, symbol, open, low, high, price, change_percent, latest_trading_day, volume, is_api FROM `IT202-S25-Stocks`
 WHERE 1=1";// used for easy append of other clauses
 if(count($_GET)> 0){
-    $symbol = se($_GET, "symbols", "", false);
+    $symbol = se($_GET, "symbol", "", false);
     if(!empty($symbol)){
-        $query .= " AND symbol = :symbol";
-        $params[":symbol"] = $symbol;
+        $query .= " AND symbol like :symbol";
+        $params[":symbol"] = "%$symbol%";
     }
     $latest_trading_day = se($_GET, "latest_trading_day", "", false);
     if(!empty($latest_trading_day)){
@@ -140,7 +140,7 @@ $form = [
              Sticky forms will "reset" to what was last applied) -->
             <a href="?" class="btn btn-secondary">Reset</a>
         </form>
-    </div>
+    </div>  
     <?php if (count($results) == 0) : ?>
         <p>No results to show</p>
     <?php else : ?>
