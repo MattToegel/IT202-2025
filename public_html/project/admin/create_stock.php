@@ -29,7 +29,7 @@ if (isset($_POST["action"])) {
                 // remove keys that aren't part of your data
                 // this is both for security and for our dynamic DB logic to work correctly
                 // the keys must match the column names of your table
-                if (!in_array($k, ["symbol", "open", "low", "high", "price", "change_perecent", "volume", "latest_trading_day"])) {
+                if (!in_array($k, ["symbol", "open", "low", "high", "price", "change_percent", "volume", "latest_trading_day"])) {
                     unset($_POST[$k]);
                 }
             }
