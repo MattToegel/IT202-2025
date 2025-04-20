@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Render functions for various HTML components.
  * Wraps `include()` statements allowing easy reuse of HTML components.
@@ -24,4 +25,18 @@ function render_table($data = array())
 function render_stock_card($data = array())
 {
     include(__DIR__ . "/../partials/stock_card.php");
+}
+
+function render_broker_card($data = array())
+{
+    include(__DIR__ . "/../partials/broker_card.php");
+}
+
+function render_stars($num)
+{
+    $stars = '';
+    for ($i = 0; $i < $num; $i++) {
+        $stars .= '<i class="text-warning bi bi-star-fill"></i> ';
+    }
+    return $stars;
 }

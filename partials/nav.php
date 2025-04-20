@@ -27,6 +27,7 @@ session_start();
 <!-- include css and js files -->
 <!-- Include Bootstrap CSS and JS before custom content so it can be reused or overriden -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="<?php echo get_url('styles.css'); ?>">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 <script src="<?php echo get_url('helpers.js'); ?>"></script>
@@ -55,6 +56,9 @@ session_start();
                         <a class="nav-link" aria-current="page" href="<?php echo get_url('register.php'); ?>">Register</a>
                     </li>
                 <?php endif; ?>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="<?php echo get_url('brokers.php'); ?>">Brokers</a>
+                </li>
                 <?php if (has_role("Admin")) : ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -96,6 +100,18 @@ session_start();
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link active" aria-current="page" href="<?php echo get_url('admin/list_companies.php'); ?>">List Companies</a>
+                            </li>
+                        </ul>
+                    </li>
+                <?php endif; ?>
+                <?php if (has_role("Admin")) : ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Manage Brokers
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="<?php echo get_url('admin/generate_broker.php'); ?>">Generate Broker</a>
                             </li>
                         </ul>
                     </li>
