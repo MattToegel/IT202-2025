@@ -172,6 +172,7 @@ function generate_broker($_rarity = null)
     $broker = calculate_stats($rarity, $stocks);
     $broker["name"] = $name;
     $broker["rarity"] = $rarity;
+    
     // insert into db
     $db = getDB();
     $stmt = $db->prepare("INSERT INTO `IT202-S25-Brokers` (name, rarity, life, attack, defense, power) 
@@ -179,9 +180,12 @@ function generate_broker($_rarity = null)
     foreach($broker as $key => $value) {
          $stmt->bindValue(":$key", $value, PDO::PARAM_STR);
     }
+    // set stocks after insert to keep it dynamic
+    $broker["stocks"] = $stocks;
     try {
         $stmt->execute();
         $id = $db->lastInsertId();
+        $broker["id"] = $id;
         if ($id) {
             // insert stocks into db
             foreach ($stocks as $stock) {

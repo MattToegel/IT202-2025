@@ -107,8 +107,10 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                         } else {
                             $_SESSION["user"]["roles"] = []; //no roles
                         }
+                        $stats = fetch_user_stats($user["id"]);
+                        $_SESSION["user"]["stats"] = $stats;
                         flash("Welcome, " . get_username());
-                        die(header("Location: home.php"));
+                        redirect("home.php");
                     } else {
                         flash("Invalid password");
                     }
@@ -122,4 +124,4 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
     }
 }
 ?>
-<?php require_once(__DIR__ . "/../../partials/flash.php");
+<?php require_once(__DIR__ . "/../../partials/footer.php");

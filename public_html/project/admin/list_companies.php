@@ -29,3 +29,7 @@ $table = ["data" => $results, "edit_url" => get_url("admin/edit_company.php"), "
     <h3>List Companies</h3>
     <?php render_table($table); ?>
 </div>
+<?php
+//note we need to go up 1 more directory
+require_once(__DIR__ . "/../../../partials/footer.php");
+?>

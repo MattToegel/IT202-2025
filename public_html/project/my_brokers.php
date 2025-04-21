@@ -8,7 +8,8 @@ $allowed_columns = ["name", "rarity", "life", "attack", "defense", "power", "cre
 $sort = ["asc", "desc"];
 
 $params = [];
-$query = "SELECT id, name, rarity, life, attack, defense, power FROM `IT202-S25-Brokers` WHERE 1=1";
+$query = "SELECT b.id, name, rarity, life, attack, defense, power 
+FROM `IT202-S25-Brokers` b JOIN `IT202-S25-UserBrokers` ub on b.id = ub.broker_id WHERE 1=1";
 
 // Filtering logic
 if (count($_GET) > 0) {
@@ -36,6 +37,8 @@ if (count($_GET) > 0) {
 
     $query .= " ORDER BY $column $order";
 }
+$query .= " AND user_id = :user_id";
+$params[":user_id"] = get_user_id();
 $limit = se($_GET, "limit", 10, false);
 if (!empty($limit) && is_numeric($limit)) {
     if ($limit < 1 || $limit > 100) {

@@ -92,6 +92,17 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
         $stmt = $db->prepare("INSERT INTO Users (email, password, username) VALUES(:email, :password, :username)");
         try {
             $stmt->execute([":email" => $email, ":password" => $hash, ":username" => $username]);
+            $id = $db->lastInsertId();
+            if($id){
+                // welcome bonus points
+                try{
+                    change_points($id, 10);
+                    flash("Gained a welcome bonus of 10 points!", "success");
+                }
+                catch(Exception $e){
+                    error_log("Error adding points " . var_export($e, true));
+                }
+            }
             flash("Successfully registered!", "success");
         } catch (PDOException $e) {
             users_check_duplicate($e->errorInfo);
@@ -100,5 +111,5 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
 }
 ?>
 <?php
-require(__DIR__ . "/../../partials/flash.php");
+require(__DIR__ . "/../../partials/footer.php");
 ?>

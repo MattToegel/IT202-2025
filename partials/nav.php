@@ -47,6 +47,12 @@ session_start();
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="<?php echo get_url('profile.php'); ?>">Profile</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('hire_random.php'); ?>">Hire</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('my_brokers.php'); ?>">My Brokers</a>
+                    </li>
                 <?php endif; ?>
                 <?php if (!is_logged_in()) : ?>
                     <li class="nav-item">
@@ -122,6 +128,11 @@ session_start();
                     </li>
                 <?php endif; ?>
             </ul>
+            <?php if (is_logged_in()): ?>
+                <span class="navbar-text show-points">
+                    Points: 0
+                </span>
+            <?php endif; ?>
         </div>
     </div>
 </nav>
