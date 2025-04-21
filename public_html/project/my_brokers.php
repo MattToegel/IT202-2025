@@ -10,7 +10,7 @@ $sort = ["asc", "desc"];
 $params = [];
 $query = "SELECT b.id, name, rarity, life, attack, defense, power 
 FROM `IT202-S25-Brokers` b JOIN `IT202-S25-UserBrokers` ub on b.id = ub.broker_id WHERE 1=1";
-
+$query .= " AND user_id = :user_id";
 // Filtering logic
 if (count($_GET) > 0) {
     $name = se($_GET, "name", "", false);
@@ -35,9 +35,9 @@ if (count($_GET) > 0) {
         $order = "desc";
     }
 
-    $query .= " ORDER BY $column $order";
+    $query .= " ORDER BY b.$column $order";
 }
-$query .= " AND user_id = :user_id";
+
 $params[":user_id"] = get_user_id();
 $limit = se($_GET, "limit", 10, false);
 if (!empty($limit) && is_numeric($limit)) {
