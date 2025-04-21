@@ -36,14 +36,16 @@ if (count($_GET) > 0) {
 
     $query .= " ORDER BY $column $order";
 
-    $limit = se($_GET, "limit", 10, false);
-    if (!empty($limit) && is_numeric($limit)) {
-        if ($limit < 1 || $limit > 100) {
-            $limit = 10;
-        }
-        $query .= " LIMIT :limit";
-        $params[":limit"] = $limit;
+   
+}
+// outside of the $_GET check to always provide a limit
+$limit = se($_GET, "limit", 10, false);
+if (!empty($limit) && is_numeric($limit)) {
+    if ($limit < 1 || $limit > 100) {
+        $limit = 10;
     }
+    $query .= " LIMIT :limit";
+    $params[":limit"] = $limit;
 }
 
 // Execute broker query
