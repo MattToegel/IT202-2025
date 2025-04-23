@@ -155,7 +155,7 @@ function generate_broker($_rarity = null)
     try {
         $db = getDB();
         // $rarity is generated so should be safe to inject
-        $stmt = $db->prepare("SELECT id, symbol, price, volume, low, high  FROM `IT202-S25-Stocks` ORDER BY RAND() LIMIT $rarity");
+        $stmt = $db->prepare("SELECT id, symbol, price, volume, low, high, '1' as shares  FROM `IT202-S25-Stocks` ORDER BY RAND() LIMIT $rarity");
         $stmt->execute();
         $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
         if ($r) {

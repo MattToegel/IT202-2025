@@ -1,8 +1,8 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
-if (is_logged_in(true)) {
+/*if (is_logged_in(true)) {
     error_log("Session data: " . var_export($_SESSION, true));
-}
+}*/
 
 $allowed_columns = ["name", "rarity", "life", "attack", "defense", "power", "created"];
 $sort = ["asc", "desc"];
