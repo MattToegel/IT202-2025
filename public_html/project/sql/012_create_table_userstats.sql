@@ -1,6 +1,6 @@
 CREATE TABLE `IT202-S25-UserStats`(
     `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `user_id` int NOT NULL,
+    `user_id` int NOT NULL UNIQUE,
     `wins` int NOT NULL DEFAULT 0,
     `losses` int NOT NULL DEFAULT 0,
     `points` int NOT NULL DEFAULT 0,
