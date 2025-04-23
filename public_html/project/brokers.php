@@ -8,11 +8,12 @@ $allowed_columns = ["name", "rarity", "life", "attack", "defense", "power", "cre
 $sort = ["asc", "desc"];
 
 $params = [];
-$query = "SELECT b.id, name, rarity, life, attack, defense, power FROM `IT202-S25-Brokers` b
+$select = "SELECT b.id, name, rarity, life, attack, defense, power ";
+$query = " FROM `IT202-S25-Brokers` b
 LEFT JOIN `IT202-S25-BrokerStocks` bs ON b.id = bs.broker_id
 LEFT JOIN `IT202-S25-Stocks` s ON bs.stock_id = s.id 
 WHERE 1=1";
-
+$count_query = "";
 // Filtering logic
 if (count($_GET) > 0) {
     $name = se($_GET, "name", "", false);
@@ -39,6 +40,7 @@ if (count($_GET) > 0) {
 
     $query .= " ORDER BY $column $order";
 }
+$count_query = $query;//don't apply limit for count
 // outside of the $_GET check to always provide a limit
 $limit = se($_GET, "limit", 10, false);
 if (!empty($limit) && is_numeric($limit)) {
@@ -50,8 +52,8 @@ if (!empty($limit) && is_numeric($limit)) {
 }
 // Execute broker query
 $db = getDB();
-$stmt = $db->prepare($query);
-error_log("Broker Query: $query");
+$stmt = $db->prepare($select.$query);
+error_log("Broker Query: $select.$query");
 error_log("Params: " . var_export($params, true));
 
 foreach ($params as $key => $val) {
@@ -70,6 +72,34 @@ try {
     $r = $stmt->fetchAll();
     if ($r) {
         $brokers = $r;
+    }
+} catch (PDOException $e) {
+    error_log("Error fetching brokers: " . var_export($e, true));
+    flash("Unhandled error occurred", "danger");
+}
+
+// get count
+$db = getDB();
+$stmt = $db->prepare("SELECT COUNT(b.id) as `count` $count_query");
+error_log("Broker Query: SELECT COUNT(b.id) as `count` $count_query");
+error_log("Params: " . var_export($params, true));
+unset($params[":limit"]); // remove limit for count query
+foreach ($params as $key => $val) {
+    $type = match (true) {
+        is_numeric($val) => PDO::PARAM_INT,
+        is_bool($val) => PDO::PARAM_BOOL,
+        is_null($val) => PDO::PARAM_NULL,
+        default => PDO::PARAM_STR,
+    };
+    $stmt->bindValue($key, $val, $type);
+}
+
+$max = 0;
+try {
+    $stmt->execute();
+    $r = $stmt->fetch();
+    if ($r) {
+        $max = se($r, "count", 0, false);
     }
 } catch (PDOException $e) {
     error_log("Error fetching brokers: " . var_export($e, true));
@@ -158,6 +188,7 @@ $form = [
 ?>
 <div class="container-fluid">
     <h1>Brokers</h1>
+    
     <form>
         <div class="row">
             <?php foreach ($form as $field): ?>
@@ -169,7 +200,11 @@ $form = [
         <?php render_button(["text" => "Search", "type" => "submit"]); ?>
         <a href="?" class="btn btn-secondary">Reset</a>
     </form>
-
+    <div>
+        <?php $on_page = count($results);
+        echo "Results: $on_page/$max";
+        ?>
+    </div>
     <?php if (count($results) == 0): ?>
         <p>No brokers found</p>
     <?php else: ?>
