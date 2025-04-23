@@ -8,8 +8,21 @@ $allowed_columns = ["name", "rarity", "life", "attack", "defense", "power", "cre
 $sort = ["asc", "desc"];
 
 $params = [];
-$query = "SELECT b.id, name, rarity, life, attack, defense, power 
-FROM `IT202-S25-Brokers` b JOIN `IT202-S25-UserBrokers` ub on b.id = ub.broker_id WHERE 1=1";
+$query = "SELECT b.id,
+  b.name,
+  b.rarity,
+  b.life,
+  b.attack,
+  b.defense,
+  b.power,
+  s.symbol,
+  s.price,
+  bs.shares
+FROM `IT202-S25-Brokers` b
+JOIN `IT202-S25-UserBrokers` ub ON b.id = ub.broker_id
+LEFT JOIN `IT202-S25-BrokerStocks` bs ON b.id = bs.broker_id
+LEFT JOIN `IT202-S25-Stocks` s ON bs.stock_id = s.id
+WHERE 1=1";
 $query .= " AND user_id = :user_id";
 // Filtering logic
 if (count($_GET) > 0) {
@@ -75,17 +88,36 @@ try {
     flash("Unhandled error occurred", "danger");
 }
 
-// Fetch each broker's stocks
+// Map each broker's stocks
 $results = [];
-foreach ($brokers as $broker) {
-    $stmt = $db->prepare("SELECT s.symbol, s.price, bs.shares 
-                          FROM `IT202-S25-BrokerStocks` bs 
-                          JOIN `IT202-S25-Stocks` s ON bs.stock_id = s.id 
-                          WHERE bs.broker_id = :id");
-    $stmt->execute([":id" => $broker["id"]]);
-    $stocks = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $results[] = ["broker" => $broker, "stocks" => $stocks];
+foreach ($brokers as $row) {
+    $id = $row["id"];
+    if (!isset($results[$id])) {
+        $results[$id] = [
+            "broker" => [
+                "id" => $id,
+                "name" => $row["name"],
+                "rarity" => $row["rarity"],
+                "life" => $row["life"],
+                "attack" => $row["attack"],
+                "defense" => $row["defense"],
+                "power" => $row["power"]
+            ],
+            "stocks" => []
+        ];
+    }
+
+    if (!empty($row["symbol"])) {
+        $results[$id]["stocks"][] = [
+            "symbol" => $row["symbol"],
+            "price" => $row["price"],
+            "shares" => $row["shares"]
+        ];
+    }
 }
+
+$results = array_values($results); // reindex for rendering
+
 
 // Build filter form
 $cols = array_map(fn($col) => [$col => $col], $allowed_columns);
