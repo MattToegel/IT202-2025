@@ -24,13 +24,18 @@ if (isset($_POST["hire"])) {
         if ($purchased) {
             $db = getDB();
             // insert into IT202-S25-UserBrokers
-            $query = "INSERT INTO `IT202-S25-UserBrokers` (user_id, broker_id) VALUES (:user_id, :broker_id)";
+            $query = "INSERT INTO `IT202-S25-UserBrokers` (user_id, broker_id) 
+            VALUES (:user_id, :broker_id)";
             $params = [":user_id" => get_user_id(), ":broker_id" => $broker["id"]];
             try {
                 $stmt = $db->prepare($query);
                 $stmt->execute($params);
                 flash("Successfully hired broker", "success");
             } catch (PDOException $e) {
+                // relationship exists already (delete next few lines)
+                $query = "DELETE FROM `IT202-S25-UserBrokers WHERE user_id = :user_id AND broker_id = :broker_id";
+                $stmt = $db->prepare($query);
+                $stmt->execute($params);
                 error_log("Error inserting user broker " . var_export($e, true));
                 try {
                     change_points(get_user_id(), 100);

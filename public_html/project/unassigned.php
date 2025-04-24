@@ -1,32 +1,21 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
-if (is_logged_in(true)) {
+/*if (is_logged_in(true)) {
     error_log("Session data: " . var_export($_SESSION, true));
-}
+}*/
+
 $current_path = $_SERVER["REQUEST_URI"] . "?" . http_build_query($_GET);
 $_SESSION["last"] = $current_path;
-
 $allowed_columns = ["name", "rarity", "life", "attack", "defense", "power", "created"];
 $sort = ["asc", "desc"];
 
 $params = [];
-$select = "SELECT b.id,
-  b.name,
-  b.rarity,
-  b.life,
-  b.attack,
-  b.defense,
-  b.power,
-  s.symbol,
-  s.price,
-  bs.shares";
-$query = "
-FROM `IT202-S25-Brokers` b
-JOIN `IT202-S25-UserBrokers` ub ON b.id = ub.broker_id
+$select = "SELECT b.id, name, rarity, life, attack, defense, power, symbol, price, shares";
+$query = " FROM `IT202-S25-Brokers` b
 JOIN `IT202-S25-BrokerStocks` bs ON b.id = bs.broker_id
-JOIN `IT202-S25-Stocks` s ON bs.stock_id = s.id
-WHERE 1=1";
-$query .= " AND user_id = :user_id";
+JOIN `IT202-S25-Stocks` s ON bs.stock_id = s.id 
+WHERE 1=1 AND b.id NOT IN (SELECT broker_id FROM `IT202-S25-UserBrokers` WHERE broker_id = b.id)";
+$count_query = "";
 // Filtering logic
 if (count($_GET) > 0) {
     $name = se($_GET, "name", "", false);
@@ -53,9 +42,9 @@ if (count($_GET) > 0) {
 
     $query .= " ORDER BY b.$column $order";
 }
-
-$params[":user_id"] = get_user_id();
+error_log(var_export($_SERVER, true));
 $count_query = $query;//don't apply limit for count
+// outside of the $_GET check to always provide a limit
 $limit = se($_GET, "limit", 10, false);
 if (!empty($limit) && is_numeric($limit)) {
     if ($limit < 1 || $limit > 100) {
@@ -120,8 +109,10 @@ try {
     flash("Unhandled error occurred", "danger");
 }
 
+// Fetch each broker's stocks
 // Map each broker's stocks
 $results = [];
+echo count($brokers);
 foreach ($brokers as $row) {
     $id = $row["id"];
     if (!isset($results[$id])) {
@@ -139,7 +130,7 @@ foreach ($brokers as $row) {
         ];
     }
 
-    if (!empty($row["symbol"])) {
+    if (!empty($row["symbol"]) && isset($result[$id])) {
         $results[$id]["stocks"][] = [
             "symbol" => $row["symbol"],
             "price" => $row["price"],
@@ -147,9 +138,8 @@ foreach ($brokers as $row) {
         ];
     }
 }
-
+$original = $brokers;
 $results = array_values($results); // reindex for rendering
-
 
 // Build filter form
 $cols = array_map(fn($col) => [$col => $col], $allowed_columns);
@@ -202,9 +192,7 @@ $form = [
 ?>
 <div class="container-fluid">
     <h1>Brokers</h1>
-    <?php if(has_role("Admin")):?>
-        <a href="<?php echo get_url("admin/unassociate_user.php");?>" class="btn btn-danger">Remove All</a>
-        <?php endif;?>
+    
     <form>
         <div class="row">
             <?php foreach ($form as $field): ?>
@@ -232,6 +220,18 @@ $form = [
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
+
+    <?php 
+    $table = ["data"=>$original];
+    if(has_role("Admin")){
+        $table["edit_url"] = get_url("admin/edit_broker.php");
+        $table["delete_url"] = get_url("admin/delete_broker.php");
+    }
+    $table["view_url"] = get_url("broker.php");
+
+    render_table($table);
+    ?>
+
 </div>
 
 <?php require(__DIR__ . "/../../partials/footer.php"); ?>

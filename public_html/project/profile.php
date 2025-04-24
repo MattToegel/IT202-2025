@@ -1,9 +1,16 @@
 <?php
 require_once(__DIR__ . "/../../partials/nav.php");
-is_logged_in(true);
+
+$user_id = $_GET["id"] ?? get_user_id() ?? -1;
+if (!$user_id) {
+    flash("Invalid user", "danger");
+    redirect("home.php");
+}
+$is_me = get_user_id() == $user_id;
+$is_edit = isset($_GET["edit"]);
 ?>
 <?php
-if (isset($_POST["save"])) {
+if ($is_me && isset($_POST["save"])) {
     $email = se($_POST, "email", null, false);
     $username = se($_POST, "username", null, false);
     if (!is_valid_email($email)) {
@@ -37,22 +44,7 @@ if (isset($_POST["save"])) {
             }
         }
     }
-    //select fresh data from table
-    $stmt = $db->prepare("SELECT id, email, username from Users where id = :id LIMIT 1");
-    try {
-        $stmt->execute([":id" => get_user_id()]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($user) {
-            //$_SESSION["user"] = $user;
-            $_SESSION["user"]["email"] = $user["email"];
-            $_SESSION["user"]["username"] = $user["username"];
-        } else {
-            flash("User doesn't exist", "danger");
-        }
-    } catch (Exception $e) {
-        flash("An unexpected error occurred, please try again", "danger");
-        //echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
-    }
+
 
 
     //check/update password
@@ -95,11 +87,30 @@ if (isset($_POST["save"])) {
         }
     }
 }
+$db = getDB();
+//select fresh data from table
+$stmt = $db->prepare("SELECT id, email, username, created from Users where id = :id LIMIT 1");
+try {
+    $stmt->execute([":id" => $user_id]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($user) {
+        //$_SESSION["user"] = $user;
+        if ($is_me) {
+            $_SESSION["user"]["email"] = $user["email"];
+            $_SESSION["user"]["username"] = $user["username"];
+        }
+    } else {
+        flash("User doesn't exist", "danger");
+    }
+} catch (Exception $e) {
+    flash("An unexpected error occurred, please try again", "danger");
+    //echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
+}
 ?>
 
 <?php
-$email = get_user_email();
-$username = get_username();
+$email = $user["email"];
+$username = $user["username"];
 
 // represent form as data
 $form = [
@@ -146,7 +157,14 @@ $form = [
 ?>
 <div class="container-fluid">
     <h3>Profile</h3>
-
+    <?php if($is_me):?>
+        <?php if($is_edit):?>
+            <a href="<?php echo get_url("profile.php");?>">View</a>
+        <?php else:?>
+            <a href="?edit">Edit</a>
+        <?php endif;?>
+    <?php endif;?>
+    <?php if($is_edit):?>
     <form method="POST" onsubmit="return validate(this);">
         <?php foreach ($form as $field): ?>
             <div class="mb-3">
@@ -188,6 +206,16 @@ $form = [
             return isValid;
         }
     </script>
+    <?php else:?>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><?php se($username);?></h5>
+                <div class="card-text">
+                    Joined: <?php se($user,"created");?>
+                </div>
+            </div>
+        </div>
+    <?php endif;?>
 </div>
 <?php
 require_once(__DIR__ . "/../../partials/footer.php");

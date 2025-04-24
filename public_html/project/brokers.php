@@ -4,14 +4,18 @@ require(__DIR__ . "/../../partials/nav.php");
     error_log("Session data: " . var_export($_SESSION, true));
 }*/
 
+$current_path = $_SERVER["REQUEST_URI"] . "?" . http_build_query($_GET);
+$_SESSION["last"] = $current_path;
 $allowed_columns = ["name", "rarity", "life", "attack", "defense", "power", "created"];
 $sort = ["asc", "desc"];
 
 $params = [];
-$select = "SELECT b.id, name, rarity, life, attack, defense, power ";
+$select = "SELECT b.id, name, rarity, life, attack, defense, power, symbol, price, shares, username, u.id as user_id";
 $query = " FROM `IT202-S25-Brokers` b
-LEFT JOIN `IT202-S25-BrokerStocks` bs ON b.id = bs.broker_id
-LEFT JOIN `IT202-S25-Stocks` s ON bs.stock_id = s.id 
+JOIN `IT202-S25-BrokerStocks` bs ON b.id = bs.broker_id
+JOIN `IT202-S25-Stocks` s ON bs.stock_id = s.id 
+LEFT JOIN `IT202-S25-UserBrokers` ub on ub.broker_id = b.id
+LEFT JOIN `Users` u on ub.user_id = u.id
 WHERE 1=1";
 $count_query = "";
 // Filtering logic
@@ -38,8 +42,9 @@ if (count($_GET) > 0) {
         $order = "desc";
     }
 
-    $query .= " ORDER BY $column $order";
+    $query .= " ORDER BY b.$column $order";
 }
+error_log(var_export($_SERVER, true));
 $count_query = $query;//don't apply limit for count
 // outside of the $_GET check to always provide a limit
 $limit = se($_GET, "limit", 10, false);
@@ -80,7 +85,7 @@ try {
 
 // get count
 $db = getDB();
-$stmt = $db->prepare("SELECT COUNT(b.id) as `count` $count_query");
+$stmt = $db->prepare("SELECT COUNT(distinct b.id) as `count` $count_query");
 error_log("Broker Query: SELECT COUNT(b.id) as `count` $count_query");
 error_log("Params: " . var_export($params, true));
 unset($params[":limit"]); // remove limit for count query
@@ -109,6 +114,7 @@ try {
 // Fetch each broker's stocks
 // Map each broker's stocks
 $results = [];
+echo count($brokers);
 foreach ($brokers as $row) {
     $id = $row["id"];
     if (!isset($results[$id])) {
@@ -120,13 +126,15 @@ foreach ($brokers as $row) {
                 "life" => $row["life"],
                 "attack" => $row["attack"],
                 "defense" => $row["defense"],
-                "power" => $row["power"]
+                "power" => $row["power"],
+                "username"=>$row["username"],
+                "user_id"=>$row["user_id"]
             ],
             "stocks" => []
         ];
     }
 
-    if (!empty($row["symbol"])) {
+    if (!empty($row["symbol"]) && isset($result[$id])) {
         $results[$id]["stocks"][] = [
             "symbol" => $row["symbol"],
             "price" => $row["price"],
