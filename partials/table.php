@@ -73,13 +73,14 @@
     $_delete_url = se($data, "delete_url", "", false);
     $_delete_label = se($data, "delete_label", "Delete", false);
     $_delete_classes = se($data, "delete_classes", "btn btn-danger", false);
+    $_fav_url = se($data, "fav_url", "", false);
     $_primary_key_column = se($data, "primary_key", "id", false); // used for the url generation
     //TODO persist query params (future lesson)
     //
     // edge case that should consider a redesign
     $_post_self_form = isset($data["post_self_form"]) ? $data["post_self_form"] : [];
     // end edge case
-    $_has_atleast_one_url = $_view_url || $_edit_url || $_delete_url || $_post_self_form;
+    $_has_atleast_one_url = $_view_url || $_edit_url || $_delete_url || $_post_self_form || $_fav_url;
     $_empty_message = se($data, "empty_message", "No records to show", false);
     $_header_override = isset($data["header_override"]) ? $data["header_override"] : []; // note: this is as csv string or an array
     // assumes csv list; explodes to array
@@ -142,6 +143,9 @@
                                     <?php endif; ?>
                                     <?php if ($_delete_url) : ?>
                                         <a href="<?php se($_delete_url); ?>?<?php se($_primary_key_column); ?>=<?php se($row, $_primary_key_column); ?>" class="<?php se($_delete_classes); ?>"><?php se($_delete_label); ?></a>
+                                    <?php endif; ?>
+                                    <?php if ($_fav_url) : ?>
+                                        <a href="<?php se($_fav_url); ?>?<?php se($_primary_key_column); ?>=<?php se($row, $_primary_key_column); ?>" class="<?php se($_view_classes); ?>">Toggle Fav</a>
                                     <?php endif; ?>
                                     <?php if ($_post_self_form) : ?>
                                         <!-- TODO refactor -->

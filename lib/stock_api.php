@@ -42,7 +42,7 @@ function fetch_quote($symbol)
     $transformedResult = [];
     // transform data to match our DB structure
     if (isset($result["Global Quote"])) {
-        
+
         $quote = $result["Global Quote"];
         foreach ($quote as $k => $v) {
             // remove the numbers from the keys and fix spaces to underscores
@@ -50,7 +50,7 @@ function fetch_quote($symbol)
 
             $v = str_replace("%", "", $v);
             if (is_numeric($v)) {
-                if(strpos($v, ".") !== false) {
+                if (strpos($v, ".") !== false) {
                     $v = floatval($v);
                 } else {
                     $v = intval($v);
@@ -65,7 +65,8 @@ function fetch_quote($symbol)
     }
     return $transformedResult;
 }
-function search_companies($search){
+function search_companies($search)
+{
     $data = ["function" => "SYMBOL_SEARCH", "keywords" => $search, "datatype" => "json"];
     $endpoint = "https://alpha-vantage.p.rapidapi.com/query";
     $isRapidAPI = true;
@@ -127,33 +128,92 @@ function search_companies($search){
         $result = [];
     }
     // transform data
-    if(isset($result["bestMatches"])){
+    if (isset($result["bestMatches"])) {
         $result = $result["bestMatches"];
         $transformedResult = [];
-        foreach($result as $r){
-            
+        foreach ($result as $r) {
+
             // fixed keys
-            foreach($r as $k=>$v){
+            foreach ($r as $k => $v) {
                 $nk = str_replace(" ", "_", explode(" ", $k, 2)[1]);
                 $r[$nk] = $v;
                 unset($r[$k]);
             }
-            if(strlen($r["symbol"]) > 6){
+            if (strlen($r["symbol"]) > 6) {
                 continue;
             }
             // map/extract desired information
-            if(strlen($r["symbol"]) > 6){
+            if (strlen($r["symbol"]) > 6) {
                 continue; // skip if symbol is longer than 6 characters
             }
             $data = [
-                "symbol"=>$r["symbol"],
-                "name" =>$r["name"],
-                "type"=>$r["type"],
-                "region"=>$r["region"],
-                "currency"=>$r["currency"]
+                "symbol" => $r["symbol"],
+                "name" => $r["name"],
+                "type" => $r["type"],
+                "region" => $r["region"],
+                "currency" => $r["currency"]
             ];
             array_push($transformedResult, $data);
         }
     }
     return $transformedResult;
+}
+
+function fetch_crypto_dailies($symbol)
+{
+    $symbol = strtoupper($symbol);
+    $data = ["function" => "DIGITAL_CURRENCY_DAILY", "symbol" => $symbol, "market" => "USD"];
+    $endpoint = "https://alpha-vantage.p.rapidapi.com/query";
+    $isRapidAPI = true;
+    $rapidAPIHost = "alpha-vantage.p.rapidapi.com";
+    $result = get($endpoint, "STOCK_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
+    error_log("API Response: " . var_export($result, true));
+    if (se($result, "status", 400, false) == 200 && isset($result["response"])) {
+        $result = json_decode($result["response"], true);
+    } else {
+        $result = [];
+    }
+    // transform
+    $transformed = [];
+    $data = $result["Meta Data"];
+    // cleanup meta data
+    foreach ($data as $key => $value) {
+        $nk = str_replace(" ", "_", explode(" ", $key, 2)[1]);
+        $nk = str_replace("(", "", str_replace(")", "", $nk));
+        $nk = strtolower($nk);
+        $data[$nk] = $value;
+        unset($data[$key]);
+    }
+    // transform time series
+   
+    foreach ($result["Time Series (Digital Currency Daily)"] as $key => $value) {
+        error_log("value => " . var_export($value, true));
+        foreach ($value as $k => $v) {
+            $nk = str_replace(" ", "_", explode(" ", $k, 2)[1]);
+            $nk = strtolower($nk);
+            $value[$nk] = $v;
+        }
+        $high = $value["high"];
+        $low = $value["low"];
+        $average = ($high + $low) / 2;
+
+
+        // ignore records with symbol > 6
+        if (strlen($data["digital_currency_code"]) > 6) {
+            continue;
+        }
+        // ignore records with name > 20
+        if (strlen($data["digital_currency_name"]) > 20) {
+            continue;
+        }
+        array_push($transformed, [
+            "date" => $key,
+            "average" => $average,
+            "currency_symbol" => $data["digital_currency_code"],
+            "currency_name" => $data["digital_currency_name"],
+            "is_api"=>1
+        ]);
+    }
+    $result = $transformed;
+    return $result;
 }
