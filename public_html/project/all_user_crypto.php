@@ -15,7 +15,7 @@ $sort = ["asc", "desc"];
 
 $params = [];
 $select = "SELECT c.id, `currency_symbol`, `currency_name`, `average`, `date`, `username`, u.id as user_id,
-(select count(uc2.user_id) from `IT202-S25-UserCrypto` uc2 where uc2.crypto_id =  c.id) as `count`s";
+(select count(uc2.user_id) from `IT202-S25-UserCrypto` uc2 where uc2.crypto_id =  c.id) as `count`";
 $query = " FROM `IT202-S25-Crypto` as c
 JOIN `IT202-S25-UserCrypto` uc on uc.crypto_id = c.id
 JOIN `Users` u on uc.user_id = u.id
@@ -85,6 +85,17 @@ try {
     $r = $stmt->fetchAll();
     if ($r) {
         $crypto = $r;
+        foreach($crypto as $index=>$value){
+           
+            if(isset($value["username"])){
+                $url = get_url("profile.php") . "?=" . ($value["user_id"]??-1);
+                $username = $value["username"] ?? "unknown";
+                $nv = "<a href=\"$url\">$username</a>";
+                $crypto[$index]["username"] = $nv;
+                unset($crypto[$index]["user_id"]);
+            }
+            error_log("$index =>".var_export($value,true));
+        }
     }
 } catch (PDOException $e) {
     error_log("Error fetching crypto: " . var_export($e, true));
@@ -201,6 +212,7 @@ $form = [
     }
     $table["view_url"] = get_url("entry.php");
     $table["ignored_columns"] = ["id", "user_id"];
+    $table["html_columns"] = ["username"];
     $table["fav_url"] = get_url("api/toggle_fav.php");
     render_table($table);
     ?>

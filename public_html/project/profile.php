@@ -2,7 +2,7 @@
 require_once(__DIR__ . "/../../partials/nav.php");
 
 $user_id = $_GET["id"] ?? get_user_id() ?? -1;
-if (!$user_id) {
+if ($user_id <= 0) {
     flash("Invalid user", "danger");
     redirect("home.php");
 }
@@ -164,7 +164,7 @@ $form = [
             <a href="?edit">Edit</a>
         <?php endif;?>
     <?php endif;?>
-    <?php if($is_edit):?>
+    <?php if($is_edit && $is_me):?>
     <form method="POST" onsubmit="return validate(this);">
         <?php foreach ($form as $field): ?>
             <div class="mb-3">
