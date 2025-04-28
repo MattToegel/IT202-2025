@@ -60,7 +60,8 @@ if (isset($_POST["action"])) {
         $db = getDB();
         $stmt = $db->prepare("SELECT Users.id, username, 
         (SELECT GROUP_CONCAT(crypto.currency_symbol, crypto.date) from 
-        `IT202-S25-UserCrypto` ur JOIN `IT202-S25-Crypto` crypto on ur.crypto_id = crypto.id WHERE ur.user_id = Users.id) as crypto
+        `IT202-S25-UserCrypto` ur JOIN `IT202-S25-Crypto` crypto 
+        on ur.crypto_id = crypto.id WHERE ur.user_id = Users.id) as crypto
         from Users WHERE username like :username LIMIT 25");
         try {
             $stmt->execute([":username" => "%$username%"]);
@@ -114,9 +115,9 @@ if (isset($_POST["action"])) {
                     </td>
                     <td>
                         <?php foreach ($crypto as $c) : ?>
-                            <div>
-                                <label for="role_<?php se($c, 'id'); ?>"><?php se($c, "currency_name"); ?> (<?php se($c,"date");?>)</label>
-                                <input id="role_<?php se($c, 'id'); ?>" type="checkbox" name="crypto[]" value="<?php se($c, 'id'); ?>" />
+                            <div class="form-check form-switch">
+                                <label class="form-check-label" for="role_<?php se($c, 'id'); ?>"><?php se($c, "currency_name"); ?> (<?php se($c,"date");?>)</label>
+                                <input class="form-check-input" role="switch" id="role_<?php se($c, 'id'); ?>" type="checkbox" name="crypto[]" value="<?php se($c, 'id'); ?>" />
                             </div>
                         <?php endforeach; ?>
                     </td>
