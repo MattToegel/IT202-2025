@@ -88,10 +88,11 @@ try {
         foreach($crypto as $index=>$value){
            
             if(isset($value["username"])){
-                $url = get_url("profile.php") . "?=" . ($value["user_id"]??-1);
+                $url = get_url("profile.php") . "?id=" . ($value["user_id"]??-1);
                 $username = $value["username"] ?? "unknown";
                 $nv = "<a href=\"$url\">$username</a>";
-                $crypto[$index]["username"] = $nv;
+                $value["username"] = $nv;// doesn't work
+                $crypto[$index]["username"] = $nv; //works
                 unset($crypto[$index]["user_id"]);
             }
             error_log("$index =>".var_export($value,true));
