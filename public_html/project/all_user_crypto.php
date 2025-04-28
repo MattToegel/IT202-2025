@@ -34,6 +34,11 @@ if (count($_GET) > 0) {
         $query .= " AND currency_name LIKE :name";
         $params[":name"] = "%$name%";
     }
+    $name = se($_GET, "username", "", false);
+    if (!empty($name)) {
+        $query .= " AND username LIKE :name";
+        $params[":name"] = "%$name%";
+    }
     $date = se($_GET, "date", "", false);
     if (!empty($date)) {
         $query .= " AND date >= :date";
@@ -159,6 +164,13 @@ $form = [
         "name" => "date",
         "label" => "date",
         "value" => se($_GET, "date", "", false),
+    ],
+    [
+        "type" => "text",
+        "id" => "username",
+        "name" => "username",
+        "label" => "Username",
+        "value" => se($_GET, "username", "", false),
     ],
     [
         "type" => "select",
