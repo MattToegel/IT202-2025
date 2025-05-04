@@ -6,6 +6,7 @@ is_logged_in(true);
 if (isset($_POST["save"])) {
     $email = se($_POST, "email", null, false);
     $username = se($_POST, "username", null, false);
+    $hasError = false;
     if (!is_valid_email($email)) {
         flash("Invalid email address", "danger");
         $hasError = true;
