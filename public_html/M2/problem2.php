@@ -4,7 +4,7 @@ require_once "base.php";
 
 $ucid = "mt85"; // <-- set your ucid
 
-
+// Don't edit the arrays below, they are used to test your code
 $array1 = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6];
 $array2 = [1.0000001, 1.0000002, 1.0000003, 1.0000004, 1.0000005];
 $array3 = [1.0 / 3.0, 2.0 / 3.0, 4.0 / 3.0, 8.0 / 3.0, 8.0 / 3.0];
@@ -37,7 +37,7 @@ function sumValues($arr, $arrayNumber)
     // End Solution Edits
     echo "<p>Total Raw Value: {$total}</p>";
     echo "<p>Total Modified Value: {$modifiedTotal}</p>";
-    echo "<br>______________________________________<br>";
+    echo "______________________________________<br>";
 }
 
 // Run the problem

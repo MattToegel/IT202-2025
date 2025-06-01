@@ -4,7 +4,7 @@ require_once "base.php";
 
 $ucid = "mt85"; // <-- set your ucid
 
-
+// Don't edit the arrays below, they are used to test your code
 $array1 = [42, -17, 89, -256, 1024, -4096, 50000, -123456];
 $array2 = [3.14159265358979, -2.718281828459, 1.61803398875, -0.5772156649, 0.0000001, -1000000.0];
 $array3 = [1.1, -2.2, 3.3, -4.4, 5.5, -6.6, 7.7, -8.8];
@@ -27,7 +27,7 @@ function bePositive($arr, $arrayNumber)
 
 
     // End Solution Edits
-    echo "<p>Output: </p>";
+    echo "<span>Output: </span>";
     printOutputWithType($output);
     echo "<br>______________________________________<br>";
 }
