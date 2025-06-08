@@ -1,26 +1,73 @@
-* {
-    margin: 0; /* Don't edit */
-    padding: 0; /* Don't edit */
-    box-sizing: border-box; /* Don't edit */
+/* Do not make any edits to this file*/
+html,body {
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
 }
 
-header,
-footer {
-    background-color: #190f3d; /* Don't edit */
-    color: white; /* Don't edit */
-    
+.challenge1,
+.challenge2,
+.challenge3 {
+
+    /* same header, footer, main across challenges*/
+    header,
+    footer {
+        background-color: #190f3d !important;
+        color: white !important;
+        outline: 2px solid red !important;
+        box-shadow: 0 0 0 2px red inset !important;
+    }
+
+    main {
+        background: #326345 !important;
+        color: white !important;
+        outline: 2px solid cyan !important;
+        box-shadow: 0 0 0 2px cyan inset !important;
+    }
+
+    /* same nav across challenges*/
+    nav {
+        background-color: darkgray !important;
+        padding: 1em !important;
+    }
+
+    nav ul {
+        display: flex !important;
+        gap: 10px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    nav ul li {
+        list-style: none !important;
+    }
+
+    nav ul li a {
+        text-decoration: none !important;
+        padding: 5px 10px !important;
+        background-color: #e0e0e0 !important;
+        border-radius: 3px !important;
+        color: black !important;
+    }
+
+    nav ul li a.active {
+        background-color: #c0c0c0 !important;
+        font-weight: bold !important;
+    }
+
+    nav ul li a:hover {
+        background-color: #d0d0d0 !important;
+    }
 }
 
-main {
-    background: #326345; /* Don't edit */
-    color: white; /* Don't edit */
+.challenge3 .panel {
+    background-color: aqua !important;
 }
-.panel{
-    background-color: aqua /* Don't edit */;
+
+.challenge2 #left-sidebar {
+    background-color: blueviolet !important;
 }
-#left-sidebar{
-    background-color: blueviolet;
-}
-#right-sidebar{
-    background-color: coral;
+
+.challenge2 #right-sidebar {
+    background-color: coral !important;
 }
