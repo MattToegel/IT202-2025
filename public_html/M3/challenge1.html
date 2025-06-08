@@ -2,9 +2,10 @@
 Challenge 1: Full-Page Layout with Scrollable Content
 -----------------------------------------------------
 Requirements:
- The header and footer should remain FIXED in place (top and bottom of page respectively)
- The content area should SCROLL independently (nothing should be pushed off screen)
- The entire page should always take up the full viewport height
+ #1 The header and footer should remain FIXED in place (top and bottom of page respectively)
+ #2 The content area should SCROLL independently (nothing should be pushed off screen and the browser WINDOW scrollbar shouldn't appear)
+ #3 The entire page should always take up the full viewport height
+ #4 The borders around header,main,footer should remain intact and visible, this will help show that the challenges were solved correctly
 -->
 
 <!DOCTYPE html>
@@ -17,13 +18,28 @@ Requirements:
     <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body class="challenge1">
+    <nav>
+        <ul>
+            <li><a href="challenge1.html" class="active">Challenge 1</a></li>
+            <li><a href="challenge2.html">Challenge 2</a></li>
+            <li><a href="challenge3.html">Challenge 3</a></li>
+        </ul>
+    </nav>
     <!-- Edit your UCID here -->
     <header>Header Section (mt85)</header>
     <!-- Don't make any other edits to the HTML -->
     <main>
         <div class="content">
             <h2>Lorem Ipsum</h2>
+            <section>
+                <ul>
+                    <li>The header and footer should remain <strong>fixed</strong> in place (top and bottom of page respectively).</li>
+                    <li>The content area should <strong>scroll independently</strong> (nothing should be pushed off screen and the browser window scrollbar shouldn't appear).</li>
+                    <li>The entire page should always take up the <strong>full viewport height</strong>.</li>
+                    <li>The borders around header, main, and footer should remain <strong>intact and visible</strong>; this will help show that the challenges were solved correctly.</li>
+                </ul>
+            </section>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id posuere felis. Pellentesque tincidunt,
                 mauris sed pretium vehicula, enim odio lacinia urna, vel blandit sapien turpis at enim. Suspendisse a
                 tortor vel nunc lobortis dapibus in id dolor. Morbi elementum ligula nec dictum fringilla. Sed sed
@@ -37,20 +53,9 @@ Requirements:
 </body>
 
 </html>
+<script src="util.js"></script>
 
-<script>
-    // This section is just to generate a lot of text without hard-coding it
-    // Ignore this whole script tag, it's not relevant for the challenge
-    // Don't make any edits/changes here
-    let content = document.querySelector(".content");
-    let p = content.querySelector("p");
-    for (let i = 0; i < 20; i++) {
-        let another = p.cloneNode(true);
-        content.appendChild(another);
-    }
-    let header = document.querySelector("header");
-    header.innerText += " " + new Date().toLocaleString("en-US");
-</script>
 <style>
     /* You're free to make whatever edits you need here, just don't override anything in the styles.css */
+    /* See the requirements at the top. If easier, you may copy/paste them here*/
 </style>
