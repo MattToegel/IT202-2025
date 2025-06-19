@@ -11,3 +11,7 @@ if (is_logged_in()) {
     echo "You're not logged in";
 }
 ?>
+
+<?php
+require(__DIR__."/../../partials/flash.php");
+?>

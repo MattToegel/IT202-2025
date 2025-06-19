@@ -8,4 +8,5 @@ require(__DIR__ . "/validations.php");
 //TODO 3: User helpers
 require(__DIR__ . "/user_helpers.php");
 //TODO 4: Flash Message Helpers
+require(__DIR__ . "/flash_messages.php");
 ?>
