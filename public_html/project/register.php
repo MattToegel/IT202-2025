@@ -41,41 +41,35 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm"], $_POST["userna
     $hasError = false;
 
     if (empty($email)) {
-        //echo "Email must not be empty<br>";
         flash("Email must not be empty.", "danger");
         $hasError = true;
     }
     // Sanitize and validate email
     $email = sanitize_email($email);
     if (!is_valid_email($email)) {
-        //echo "Invalid email address<br>";
         flash("Invalid email address.", "danger");
         $hasError = true;
     }
-    if (!preg_match('/^[a-z0-9-_]{3,30}$/', $username)) {
+    if (!is_valid_username($username)) {
         flash("Username must be lowercase, alphanumerical, and can only contain _ or -", "danger");
         $hasError = true;
     }
     if (empty($password)) {
-        //echo "Password must not be empty<br>";
         flash("Password must not be empty.", "danger");
         $hasError = true;
     }
 
     if (empty($confirm)) {
-        //echo "Confirm password must not be empty<br>";
         flash("Confirm password must not be empty.", "danger");
         $hasError = true;
     }
 
-    if (strlen($password) < 8) {
-        //echo "Password too short<br>";
+    if (!is_valid_password($password)) {
         flash("Password must be at least 8 characters long.", "danger");
         $hasError = true;
     }
 
-    if ($password !== $confirm) {
-        //echo "Passwords must match<br>";
+    if (!is_valid_confirm($password, $confirm)) {
         flash("Passwords must match.", "danger");
         $hasError = true;
     }
@@ -88,10 +82,13 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm"], $_POST["userna
         $stmt = $db->prepare("INSERT INTO Users (email, password) VALUES (:email, :password,:username)");
         try {
             $stmt->execute([':email' => $email, ':password' => $hashed_password, ':username' => $username]);
-            //echo "Successfully registered!<br>";
+   
             flash("Successfully registered! You can now log in.", "success");
-        } catch (Exception $e) {
-            //echo "There was an error registering<br>"; // user-friendly message
+        } catch(PDOException $e) {
+            // Handle duplicate email/username
+            users_check_duplicate($e);
+        }
+        catch (Exception $e) {
             flash("There was an error registering. Please try again.", "danger");
             error_log("Registration Error: " . var_export($e, true)); // log the technical error for debugging
         }
@@ -100,4 +97,5 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm"], $_POST["userna
 ?>
 <?php
 require(__DIR__ . "/../../partials/flash.php");
+reset_session();
 ?>

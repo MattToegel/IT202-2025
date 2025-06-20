@@ -31,24 +31,21 @@ if (isset($_POST["email"], $_POST["password"])) {
     $hasError = false;
 
     if (empty($email)) {
-        //echo "Email must not be empty<br>";
         flash("Email must not be empty.", "danger");
         $hasError = true;
     }
     // Sanitize and validate email
     $email = sanitize_email($email);
     if (!is_valid_email($email)) {
-        //echo "Invalid email address";
         flash("Invalid email address.", "danger");
         $hasError = true;
     }
     if (empty($password)) {
-        //echo "Password must not be empty<br>";
         flash("Password must not be empty.", "danger");
         $hasError = true;
     }
 
-    if (strlen($password) < 8) {
+    if (!is_valid_password($password)) {
         //echo "Password too short<br>";
         flash("Password must be at least 8 characters long.", "danger");
         $hasError = true;
@@ -70,7 +67,7 @@ if (isset($_POST["email"], $_POST["password"])) {
                         $hash = $user["password"];
                         unset($user["password"]);
                         if (password_verify($password, $hash)) {
-                            //echo "Welcome, $email!<br>";
+                            
                             $_SESSION["user"] = $user; // add the data to the active session
                             die(header("Location: landing.php"));
                         } else {

@@ -14,3 +14,8 @@ function is_valid_password($password)
 {
     return strlen($password) >= 8;
 }
+function is_valid_confirm($original, $confirm)
+{
+    // checking not empty to avoid empty equals empty being true
+    return !empty($original) && $original === $confirm;
+}
