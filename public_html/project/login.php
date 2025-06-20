@@ -60,7 +60,7 @@ if (isset($_POST["email"], $_POST["password"])) {
         if (!$hasError) {
             //TODO 4: Check password and fetch user
             $db = getDB();
-            $stmt = $db->prepare("SELECT id, email, password from Users where email = :email");
+            $stmt = $db->prepare("SELECT id, email, password, username from Users where email = :email");
             try {
                 $r = $stmt->execute([":email" => $email]);
                 if ($r) {
