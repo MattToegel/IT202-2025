@@ -26,7 +26,7 @@ if (isset($_POST["email"], $_POST["username"])) {
         flash("Invalid email address.", "danger");
         $hasError = true;
     }
-    if (!preg_match('/^[a-z0-9-_]{3,30}$/', $new_username)) {
+    if (!is_valid_username($new_username)) {
         flash("Username must be lowercase, alphanumerical, and can only contain _ or -", "danger");
         $hasError = true;
     }
@@ -50,19 +50,7 @@ if (isset($_POST["email"], $_POST["username"])) {
             }
         } catch (PDOException $e) {
             // handle existing email/username error
-            if ($e->errorInfo[1] === 1062) {
-                //https://www.php.net/manual/en/function.preg-match.php
-                preg_match("/Users.(\w+)/", $e->errorInfo[2], $matches);
-                if (isset($matches[1])) {
-                    flash("The chosen " . $matches[1] . " is not available.", "warning");
-                } else {
-                    flash("Unknown error occurred", "danger");
-                    error_log("Error interpreting PDOException message: " . var_export($e, true));
-                }
-            } else {
-                flash("Unhandled error occurred", "danger");
-                error_log("Error updating email/username: " . var_export($e, true));
-            }
+            users_check_duplicate($e);
         } catch (Exception $e) {
             flash("An unexpected error occurred, please try again", "danger");
             error_log("Unexpected Error updating user details: " . var_export($e, true));
@@ -106,12 +94,12 @@ if (isset($_POST["currentPassword"], $_POST["newPassword"], $_POST["confirmPassw
     $can_update = !empty($current_password) && !empty($new_password) && !empty($confirm_password);
     if ($can_update) {
         // check that new matches confirm (i.e., no typos)
-        if ($new_password !== $confirm_password) {
+        if (!is_valid_confirm($new_password,$confirm_password)) {
             flash("New passwords don't match", "warning");
         } else {
             //validate current password against password rules
             $hasError = false;
-            if (strlen($new_password) < 8) {
+            if (!is_valid_password($new_password)) {
                 //echo "Password too short<br>";
                 flash("Password must be at least 8 characters long.", "danger");
                 $hasError = true;
