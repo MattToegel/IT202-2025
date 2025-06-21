@@ -43,11 +43,11 @@ if (isset($_POST["email"], $_POST["username"])) {
                 flash("No changes made", "warning");
             } else if ($updated_rows == 1) {
                 flash("Profile saved", "success");
+                $saved = true;
             } else {
                 // this shouldn't happen, but we log it just in case
                 error_log("Unexpected number of rows updated: " . $updated_rows);
             }
-            $saved = true;
         } catch (PDOException $e) {
             // handle existing email/username error
             users_check_duplicate($e);
@@ -106,9 +106,9 @@ if (isset($_POST["currentPassword"], $_POST["newPassword"], $_POST["confirmPassw
             }
             if (!$hasError) {
                 // fetch current hash
-                $db = getDB();
-                $stmt = $db->prepare("SELECT password from Users where id = :id");
                 try {
+                    $db = getDB();
+                    $stmt = $db->prepare("SELECT password from Users where id = :id");
                     // using get_user_id() in this block to ensure we don't mistakenly allow changing someone else's password
                     $stmt->execute([":id" => get_user_id()]);
                     $result = $stmt->fetch(PDO::FETCH_ASSOC);
