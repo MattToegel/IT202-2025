@@ -53,7 +53,7 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm"], $_POST["userna
         $hasError = true;
     }
     if (!preg_match('/^[a-z0-9-_]{3,30}$/', $username)) {
-        flash("Username must be lowercase, alphanumerical, and can only contain _ or -", "danger");
+        flash("Username must be lowercase, alphanumerical, can only contain _ or -, and be between 3 to 30 characters", "danger");
         $hasError = true;
     }
     if (empty($password)) {
@@ -85,7 +85,7 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm"], $_POST["userna
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
         $db = getDB(); // available due to the `require()` of `functions.php`
         // Code for inserting user data into the database
-        $stmt = $db->prepare("INSERT INTO Users (email, password) VALUES (:email, :password,:username)");
+        $stmt = $db->prepare("INSERT INTO Users (email, password, username) VALUES (:email, :password, :username)");
         try {
             $stmt->execute([':email' => $email, ':password' => $hashed_password, ':username' => $username]);
             //echo "Successfully registered!<br>";
