@@ -8,7 +8,7 @@ function is_valid_email($email = "") {
 }
 function is_valid_username($username)
 {
-    return preg_match('/^[a-z0-9_-]{3,16}$/', $username);
+    return preg_match('/^[a-z0-9_-]{3,30}$/', $username);
 }
 function is_valid_password($password)
 {
