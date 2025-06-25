@@ -44,13 +44,16 @@
     color: #fff;
 }
 </style>
+<?php
+require(__DIR__ ."/../../lib/functions.php");
+?>
 <div class="jumbotron">
     <!-- TODO replace your name -->
     <h1 class="display-4">Welcome to Matt's project</h1>
     <!-- TODO change Date/Semester accordingly -->
     <p class="lead">This is for the Summer semester of IT202 2025</p>
     <p>
-        <a class="btn btn-primary" href="<?php echo $BASE_PATH;?>/register.php" class="btn btn-primary">Register</a>
-        <a class="btn btn-secondary" href="<?php echo $BASE_PATH;?>/login.php" class="btn btn-secondary">Login</a>
+        <a class="btn btn-primary" href="<?php get_url('register.php', true);?>" class="btn btn-primary">Register</a>
+        <a class="btn btn-secondary" href="<?php get_url('login.php', true);?>" class="btn btn-secondary">Login</a>
     </p>
 </div>

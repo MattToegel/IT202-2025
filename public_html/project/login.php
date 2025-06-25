@@ -67,8 +67,22 @@ if (isset($_POST["email"], $_POST["password"])) {
                         $hash = $user["password"];
                         unset($user["password"]);
                         if (password_verify($password, $hash)) {
-                            
+
                             $_SESSION["user"] = $user; // add the data to the active session
+                            try {
+                                //lookup potential roles
+                                $stmt = $db->prepare("SELECT Roles.name FROM Roles
+                                JOIN UserRoles on Roles.id = UserRoles.role_id
+                                where UserRoles.user_id = :user_id and Roles.is_active = 1 
+                                and UserRoles.is_active = 1");
+                                $stmt->execute([":user_id" =>get_user_id()]);
+                                $roles = $stmt->fetchAll(PDO::FETCH_ASSOC); //fetch all since we'll want multiple
+                            } catch (Exception $e) {
+                                error_log(var_export($e, true));
+                            }
+                            //save roles or empty array
+                            $_SESSION["user"]["roles"] = isset($roles)?$roles:[];
+                           
                             die(header("Location: landing.php"));
                         } else {
                             //echo "Invalid password<br>";
@@ -78,7 +92,7 @@ if (isset($_POST["email"], $_POST["password"])) {
                         //echo "Email not found<br>";
                         $ambigify = true; // ambiguous login attempt
                     }
-                    if($ambigify) {
+                    if ($ambigify) {
                         flash("Invalid login attempt. Please check your email and password.", "danger");
                     }
                 }
@@ -93,5 +107,5 @@ if (isset($_POST["email"], $_POST["password"])) {
 ?>
 
 <?php
-require(__DIR__."/../../partials/flash.php");
+require(__DIR__ . "/../../partials/flash.php");
 ?>

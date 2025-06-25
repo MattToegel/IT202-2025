@@ -23,20 +23,25 @@ if ($domain != "localhost") {
 session_start();
 require(__DIR__."/../lib/functions.php");
 ?>
-<link rel="stylesheet" href="<?php echo $BASE_PATH; ?>/styles.css">
-<script src="<?php echo $BASE_PATH; ?>/helpers.js"></script>
+<link rel="stylesheet" href="<?php get_url('styles.css', true);?>">
+<script src="<?php get_url('helpers.js', true);?>"></script>
 <nav>
     <ul>
         <?php if (is_logged_in()) : ?>
-            <li><a href="landing.php">Landing</a></li>
-            <li><a href="profile.php">Profile</a></li>
+            <li><a href="<?php get_url('landing.php', true);?>">Landing</a></li>
+            <li><a href="<?php get_url('profile.php', true);?>">Profile</a></li>
         <?php endif; ?>
         <?php if (!is_logged_in()) : ?>
-            <li><a href="login.php">Login</a></li>
-            <li><a href="register.php">Register</a></li>
+            <li><a href="<?php get_url('login.php', true);?>">Login</a></li>
+            <li><a href="<?php get_url('register.php', true);?>">Register</a></li>
+        <?php endif; ?>
+        <?php if (has_role("Admin")) : ?>
+            <li><a href="<?php get_url('admin/create_role.php', true); ?>">Create Role</a></li>
+            <li><a href="<?php get_url('admin/list_roles.php', true); ?>">List Roles</a></li>
+            <li><a href="<?php get_url('admin/assign_roles.php', true); ?>">Assign Roles</a></li>
         <?php endif; ?>
         <?php if (is_logged_in()) : ?>
-            <li><a href="logout.php">Logout</a></li>
+            <li><a href="<?php get_url('logout.php', true);?>">Logout</a></li>
         <?php endif; ?>
     </ul>
 </nav>

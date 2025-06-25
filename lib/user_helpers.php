@@ -11,20 +11,22 @@ function is_logged_in($redirect = false, $destination = "login.php")
     if ($redirect && !$isLoggedIn) {
         //if this triggers, the calling script won't receive a reply since die()/exit() terminates it
         flash("You must be logged in to view this page", "warning");
-        $path = $destination;
-        // handle relative paths
-        if (!str_starts_with($path, "/")) {
-            global $BASE_PATH; // pull from global scope of functions.php
-            // ensure BASE_PATH ends with a slash so the url doesn't get malformed
-            if (!str_ends_with($BASE_PATH, "/")) {
-                $BASE_PATH .= "/";
-            }
-            $path = $BASE_PATH . $path; // prepend the base path
-        }// the else part is for absolute paths
+        $path = get_url($destination);
 
         die(header("Location: $path"));
     }
     return $isLoggedIn;
+}
+function has_role($role)
+{
+    if (is_logged_in() && isset($_SESSION["user"]["roles"])) {
+        foreach ($_SESSION["user"]["roles"] as $r) {
+            if ($r["name"] === $role) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 function get_username()
 {
