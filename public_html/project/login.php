@@ -4,8 +4,8 @@ require(__DIR__ . "/../../partials/nav.php");
 <h3>Login</h3>
 <form onsubmit="return validate(this)" method="POST">
     <div>
-        <label for="email">Email</label>
-        <input id="email" type="email" name="email" required />
+        <label for="email">Email or Username</label>
+        <input id="email" type="text" name="email" required />
     </div>
     <div>
         <label for="pw">Password</label>
@@ -24,22 +24,35 @@ require(__DIR__ . "/../../partials/nav.php");
 <?php
 //TODO 2: add PHP Code
 if (isset($_POST["email"], $_POST["password"])) {
-
+    // still leveraging the property as "email", but it can be a username
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
     // TODO 3: validate/use
     $hasError = false;
 
     if (empty($email)) {
-        flash("Email must not be empty.", "danger");
+        flash("Email/Username must not be empty.", "danger");
         $hasError = true;
     }
-    // Sanitize and validate email
-    $email = sanitize_email($email);
-    if (!is_valid_email($email)) {
-        flash("Invalid email address.", "danger");
-        $hasError = true;
+    if (str_contains($email, "@")) {
+        // if it contains an @, treat it as an email
+
+        // Sanitize and validate email
+        $email = sanitize_email($email);
+        if (!is_valid_email($email)) {
+            flash("Invalid email address.", "danger");
+            $hasError = true;
+        }
+    } else {
+        // otherwise, treat it as a username
+        $email = strtolower(trim($email));
+        if (!is_valid_username($email)) {
+            flash("Username must be lowercase, alphanumerical, and can only contain _ or -", "danger");
+            $hasError = true;
+        }
     }
+
+
     if (empty($password)) {
         flash("Password must not be empty.", "danger");
         $hasError = true;
@@ -57,7 +70,8 @@ if (isset($_POST["email"], $_POST["password"])) {
         if (!$hasError) {
             //TODO 4: Check password and fetch user
             $db = getDB();
-            $stmt = $db->prepare("SELECT id, email, password, username from Users where email = :email");
+            // fetch by email or username
+            $stmt = $db->prepare("SELECT id, email, password, username from Users where email = :email OR username = :email");
             try {
                 $r = $stmt->execute([":email" => $email]);
                 if ($r) {
@@ -75,14 +89,14 @@ if (isset($_POST["email"], $_POST["password"])) {
                                 JOIN UserRoles on Roles.id = UserRoles.role_id
                                 where UserRoles.user_id = :user_id and Roles.is_active = 1 
                                 and UserRoles.is_active = 1");
-                                $stmt->execute([":user_id" =>get_user_id()]);
+                                $stmt->execute([":user_id" => get_user_id()]);
                                 $roles = $stmt->fetchAll(PDO::FETCH_ASSOC); //fetch all since we'll want multiple
                             } catch (Exception $e) {
                                 error_log(var_export($e, true));
                             }
                             //save roles or empty array
-                            $_SESSION["user"]["roles"] = isset($roles)?$roles:[];
-                           
+                            $_SESSION["user"]["roles"] = isset($roles) ? $roles : [];
+
                             die(header("Location: landing.php"));
                         } else {
                             //echo "Invalid password<br>";
