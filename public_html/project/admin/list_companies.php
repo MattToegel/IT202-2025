@@ -4,12 +4,12 @@ require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    die(header("Location: " . get_url("landing.php")));
 }
 
 
 
-$query = "SELECT id, symbol, name, type, region, currency, is_api FROM `IT202-S25-Companies` ORDER BY created DESC LIMIT 25";
+$query = "SELECT id, symbol, name, type, region, currency, is_api FROM `IT202-M25-Companies` ORDER BY created DESC LIMIT 25";
 $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];

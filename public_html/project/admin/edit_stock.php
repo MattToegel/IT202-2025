@@ -23,7 +23,7 @@ if (isset($_POST["symbol"])) {
     //update data
     $quote["id"] = $id; // add id to the stock array for the update
     try {
-        $r = update("IT202-S25-Stocks", $quote);
+        $r = update("IT202-M25-Stocks", $quote);
         if ($r["rowCount"]) {
             flash("Updated " . $r["rowCount"] . " record(s)", "success");
         } else {
@@ -42,7 +42,7 @@ $stock = [];
 if ($id > -1) {
     //fetch
     $db = getDB();
-    $query = "SELECT symbol, open, low, high, price, change_percent, latest_trading_day, volume FROM `IT202-S25-Stocks` WHERE id = :id";
+    $query = "SELECT symbol, open, low, high, price, change_percent, latest_trading_day, volume FROM `IT202-M25-Stocks` WHERE id = :id";
     try {
         $stmt = $db->prepare($query);
         $stmt->execute([":id" => $id]);
