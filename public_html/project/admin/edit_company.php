@@ -4,7 +4,7 @@ require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    die(header("Location: " . get_url("landing.php")));
 }
 ?>
 
@@ -23,7 +23,7 @@ if (isset($_POST["symbol"])) {
     //update data
     $company["id"] = $id; // add id to the company array for the update
     try {
-        $r = update("IT202-S25-Companies", $company);
+        $r = update("IT202-M25-Companies", $company);
         if ($r["rowCount"]) {
             flash("Updated " . $r["rowCount"] . " record(s)", "success");
         } else {
@@ -43,7 +43,7 @@ $company = [];
 if ($id > -1) {
     //fetch
     $db = getDB();
-    $query = "SELECT symbol, name, type, region, currency FROM `IT202-S25-Companies` WHERE id = :id";
+    $query = "SELECT symbol, name, type, region, currency FROM `IT202-M25-Companies` WHERE id = :id";
     try {
         $stmt = $db->prepare($query);
         $stmt->execute([":id" => $id]);

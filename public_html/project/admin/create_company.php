@@ -4,7 +4,7 @@ require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    die(header("Location:" .get_url("landing.php")));
 }
 ?>
 
@@ -36,7 +36,7 @@ if (isset($_POST["action"])) {
                 unset($_POST[$k]);
             }
         }
-        $companies["is_api"] = 0;
+        $_POST["is_api"] = 0;
         $companies = [$_POST]; // convert to array format so both fetch/create follow same shape
         error_log("Cleaned up POST: " . var_export($companies, true));
     }
@@ -45,7 +45,7 @@ if (isset($_POST["action"])) {
     // the query building should work for all regular inserts
     if (count($companies) > 0) {
         try {
-            $r = insert("IT202-S25-Companies", $companies);
+            $r = insert("IT202-M25-Companies", $companies);
             if ($r["lastInsertId"]) {
                 flash("Inserted record " . $r["lastInsertId"], "success");
             } else {

@@ -4,12 +4,12 @@ require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    die(header("Location: " . get_url("landing.php")));
 }
 
 
 
-$query = "SELECT id, symbol, open, low, high, price, change_percent, latest_trading_day, volume, is_api FROM `IT202-S25-Stocks` ORDER BY created DESC LIMIT 25";
+$query = "SELECT id, symbol, open, low, high, price, change_percent, latest_trading_day, volume, is_api FROM `IT202-M25-Stocks` ORDER BY created DESC LIMIT 25";
 $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];
@@ -54,3 +54,7 @@ try {
 <?php endif; ?>
 
 </div>
+<?php
+//note we need to go up 1 more directory
+require_once(__DIR__ . "/../../../partials/flash.php");
+?>

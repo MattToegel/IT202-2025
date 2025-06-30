@@ -4,7 +4,7 @@ require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    die(header("Location: " . get_url("landing.php")));
 }
 ?>
 
@@ -29,12 +29,12 @@ if (isset($_POST["action"])) {
                 // remove keys that aren't part of your data
                 // this is both for security and for our dynamic DB logic to work correctly
                 // the keys must match the column names of your table
-                if (!in_array($k, ["symbol", "open", "low", "high", "price", "change_perecent", "volume", "latest_trading_day"])) {
+                if (!in_array($k, ["symbol", "open", "low", "high", "price", "change_percent", "volume", "latest_trading_day"])) {
                     unset($_POST[$k]);
                 }
             }
-            $quote["is_api"] = 0;
             $quote = $_POST;
+            $quote["is_api"] = 0;
             error_log("Cleaned up POST: " . var_export($quote, true));
         }
     } else {
@@ -43,7 +43,7 @@ if (isset($_POST["action"])) {
     //insert data - Below should only really need the table name changes
     // the query building should work for all regular inserts
     try {
-        $r = insert("IT202-S25-Stocks", $quote);
+        $r = insert("IT202-M25-Stocks", $quote);
         if ($r["lastInsertId"]) {
             flash("Inserted record " . $r["lastInsertId"], "success");
         } else {

@@ -1,4 +1,4 @@
-CREATE TABLE `IT202-S25-Stocks` (
+CREATE TABLE `IT202-M25-Stocks` (
   `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `symbol` varchar(6) NOT NULL UNIQUE,
   `open` decimal(7,2) NOT NULL,
