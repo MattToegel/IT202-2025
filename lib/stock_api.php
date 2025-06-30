@@ -46,7 +46,9 @@ function fetch_quote($symbol)
         $quote = $result["Global Quote"];
         foreach ($quote as $k => $v) {
             // remove the numbers from the keys and fix spaces to underscores
-            $k = str_replace(" ", "_", explode(" ", $k, 2)[1]);
+            // "01. symbol"
+            //["01.", "symbol"]
+            $k = str_replace(" ", "_", /*symbol*/ explode(" ", $k, 2)[1]);
 
             $v = str_replace("%", "", $v);
             if (is_numeric($v)) {
@@ -134,6 +136,9 @@ function search_companies($search){
             
             // fixed keys
             foreach($r as $k=>$v){
+                // "1. symbol"
+                // ["1.", "symbol"]
+                // "symbol"
                 $nk = str_replace(" ", "_", explode(" ", $k, 2)[1]);
                 $r[$nk] = $v;
                 unset($r[$k]);
@@ -147,7 +152,8 @@ function search_companies($search){
                 "name" =>$r["name"],
                 "type"=>$r["type"],
                 "region"=>$r["region"],
-                "currency"=>$r["currency"]
+                "currency"=>$r["currency"],
+                "is_api"=>1
             ];
             array_push($transformedResult, $data);
         }

@@ -4,7 +4,7 @@ require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: $BASE_PATH" . "/home.php"));
+    die(header("Location: " . get_url("landing.php")));
 }
 ?>
 
@@ -22,7 +22,7 @@ if (isset($_POST["symbol"])) {
     // Ideally only the table name should need to change for most queries
     //update data
     $db = getDB();
-    $query = "UPDATE `IT202-S25-Companies` SET ";
+    $query = "UPDATE `IT202-M25-Companies` SET ";
 
     $params = [];
     //per record
@@ -60,7 +60,7 @@ $company = [];
 if ($id > -1) {
     //fetch
     $db = getDB();
-    $query = "SELECT symbol, name, type, region, currency FROM `IT202-S25-Companies` WHERE id = :id";
+    $query = "SELECT symbol, name, type, region, currency FROM `IT202-M25-Companies` WHERE id = :id";
     try {
         $stmt = $db->prepare($query);
         $stmt->execute([":id" => $id]);

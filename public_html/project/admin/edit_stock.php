@@ -22,7 +22,7 @@ if (isset($_POST["symbol"])) {
     // Ideally only the table name should need to change for most queries
     //update data
     $db = getDB();
-    $query = "UPDATE `IT202-S25-Stocks` SET ";
+    $query = "UPDATE `IT202-M25-Stocks` SET ";
 
     $params = [];
     //per record
@@ -54,7 +54,7 @@ $stock = [];
 if ($id > -1) {
     //fetch
     $db = getDB();
-    $query = "SELECT symbol, open, low, high, price, change_percent, latest_trading_day, volume FROM `IT202-S25-Stocks` WHERE id = :id";
+    $query = "SELECT symbol, open, low, high, price, change_percent, latest_trading_day, volume FROM `IT202-M25-Stocks` WHERE id = :id";
     try {
         $stmt = $db->prepare($query);
         $stmt->execute([":id" => $id]);
