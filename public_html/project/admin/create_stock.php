@@ -43,6 +43,7 @@ if (isset($_POST["action"])) {
     //insert data - Below should only really need the table name changes
     // the query building should work for all regular inserts
     try {
+        $quote = uppercaseSymbolCurrency([$quote])[0];
         $r = insert("IT202-M25-Stocks", $quote, ["update_duplicate"=>true]);
         if ($r["lastInsertId"]) {
             flash("Inserted record " . $r["lastInsertId"], "success");
@@ -59,6 +60,7 @@ if (isset($_POST["action"])) {
     }
 }
 
+//TODO handle manual create stock
 ?>
 <div class="container-fluid">
     <h3>Create or Fetch Stock</h3>

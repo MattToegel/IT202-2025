@@ -42,7 +42,7 @@ function fetch_quote($symbol)
     $transformedResult = [];
     // transform data to match our DB structure
     if (isset($result["Global Quote"])) {
-        
+
         $quote = $result["Global Quote"];
         foreach ($quote as $k => $v) {
             // remove the numbers from the keys and fix spaces to underscores
@@ -52,7 +52,7 @@ function fetch_quote($symbol)
 
             $v = str_replace("%", "", $v);
             if (is_numeric($v)) {
-                if(strpos($v, ".") !== false) {
+                if (strpos($v, ".") !== false) {
                     $v = floatval($v);
                 } else {
                     $v = intval($v);
@@ -67,7 +67,8 @@ function fetch_quote($symbol)
     }
     return $transformedResult;
 }
-function search_companies($search){
+function search_companies($search)
+{
     $data = ["function" => "SYMBOL_SEARCH", "keywords" => $search, "datatype" => "json"];
     $endpoint = "https://alpha-vantage.p.rapidapi.com/query";
     $isRapidAPI = true;
@@ -129,13 +130,13 @@ function search_companies($search){
         $result = [];
     }
     // transform data
-    if(isset($result["bestMatches"])){
+    if (isset($result["bestMatches"])) {
         $result = $result["bestMatches"];
         $transformedResult = [];
-        foreach($result as $r){
-            
+        foreach ($result as $r) {
+
             // fixed keys
-            foreach($r as $k=>$v){
+            foreach ($r as $k => $v) {
                 // "1. symbol"
                 // ["1.", "symbol"]
                 // "symbol"
@@ -143,23 +144,35 @@ function search_companies($search){
                 $r[$nk] = $v;
                 unset($r[$k]);
             }
-            if(strlen($r["symbol"]) > 6){
+            if (strlen($r["symbol"]) > 6) {
                 continue;
             }
             // map/extract desired information
-            if(strlen($r["symbol"]) > 6){
-                continue; // skip if symbol is longer than 6 characters
-            }
             $data = [
-                "symbol"=>$r["symbol"],
-                "name" =>$r["name"],
-                "type"=>$r["type"],
-                "region"=>$r["region"],
-                "currency"=>$r["currency"],
-                "is_api"=>1
+                "symbol" => $r["symbol"],
+                "name" => $r["name"],
+                "type" => $r["type"],
+                "region" => $r["region"],
+                "currency" => $r["currency"],
+                "is_api" => 1
             ];
             array_push($transformedResult, $data);
         }
     }
     return $transformedResult;
+}
+
+function uppercaseSymbolCurrency($data)
+{
+    if (!is_array($data)) {
+        throw new InvalidArgumentException('$data must be an array');
+    }
+    foreach ($data as $i => $obj) {
+        foreach ($obj as $k => $v) {
+            if (in_array($k, ["symbol", "currency"])) {
+                $data[$i][$k] = strtoupper($v);
+            }
+        }
+    }
+    return $data;
 }

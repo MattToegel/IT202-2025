@@ -44,6 +44,9 @@ if (isset($_POST["action"])) {
     //insert data - Below should only really need the table name changes
     // the query building should work for all regular inserts
     if (count($companies) > 0) {
+        $companies = uppercaseSymbolCurrency($companies);
+
+        error_log("Transformed companies " . var_export($companies, true));
         try {
             $r = insert("IT202-M25-Companies", $companies,["debug"=>true,"update_duplicate"=>true]);
             if ($r["lastInsertId"] || $r["rowCount"] > 0) {
