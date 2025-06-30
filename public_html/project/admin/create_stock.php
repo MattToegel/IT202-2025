@@ -43,7 +43,7 @@ if (isset($_POST["action"])) {
     //insert data - Below should only really need the table name changes
     // the query building should work for all regular inserts
     try {
-        $r = insert("IT202-M25-Stocks", $quote);
+        $r = insert("IT202-M25-Stocks", $quote, ["update_duplicate"=>true]);
         if ($r["lastInsertId"]) {
             flash("Inserted record " . $r["lastInsertId"], "success");
         } else {
