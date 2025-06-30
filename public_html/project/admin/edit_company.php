@@ -22,7 +22,9 @@ if (isset($_POST["symbol"])) {
     // Ideally only the table name should need to change for most queries
     //update data
     $company["id"] = $id; // add id to the company array for the update
+    
     try {
+        $company = uppercaseSymbolCurrency([$company])[0];
         $r = update("IT202-M25-Companies", $company);
         if ($r["rowCount"]) {
             flash("Updated " . $r["rowCount"] . " record(s)", "success");

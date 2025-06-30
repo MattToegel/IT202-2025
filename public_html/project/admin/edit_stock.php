@@ -23,6 +23,7 @@ if (isset($_POST["symbol"])) {
     //update data
     $quote["id"] = $id; // add id to the stock array for the update
     try {
+        $quote = uppercaseSymbolCurrency([$quote])[0];
         $r = update("IT202-M25-Stocks", $quote);
         if ($r["rowCount"]) {
             flash("Updated " . $r["rowCount"] . " record(s)", "success");
