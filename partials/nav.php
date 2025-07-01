@@ -26,9 +26,9 @@ session_start();
 ?>
 <!-- include css and js files -->
 <!-- Include Bootstrap CSS and JS before custom content so it can be reused or overriden -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
 <link rel="stylesheet" href="<?php echo get_url('styles.css'); ?>">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
 <script src="<?php echo get_url('helpers.js'); ?>"></script>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
@@ -41,7 +41,7 @@ session_start();
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <?php if (is_logged_in()) : ?>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="<?php echo get_url('home.php'); ?>">Home</a>
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('landing.php'); ?>">Landing</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="<?php echo get_url('profile.php'); ?>">Profile</a>
@@ -92,10 +92,10 @@ session_start();
                         </a>
                         <ul class="dropdown-menu">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="<?php echo get_url('admin/create_company.php'); ?>">Create Company</a>
+                                <a class="nav-link" aria-current="page" href="<?php echo get_url('admin/create_company.php'); ?>">Create Company</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="<?php echo get_url('admin/list_companies.php'); ?>">List Companies</a>
+                                <a class="nav-link" aria-current="page" href="<?php echo get_url('admin/list_companies.php'); ?>">List Companies</a>
                             </li>
                         </ul>
                     </li>

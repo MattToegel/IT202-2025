@@ -1,6 +1,5 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
-reset_session();
 ?>
 <div class="container-fluid">
     <form onsubmit="return validate(this)" method="POST">
@@ -93,4 +92,5 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
 ?>
 <?php
 require(__DIR__ . "/../../partials/flash.php");
+reset_session();
 ?>

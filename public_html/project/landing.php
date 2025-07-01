@@ -1,15 +1,13 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 if (is_logged_in(true)) {
-    //echo "Welcome home, " . get_username();
-    //comment this out if you don't want to see the session variables
     error_log("Session data: " . var_export($_SESSION, true));
 }
 $allowed_columns = ["symbol", "open", "low", "high", "price", "change_percent", "latest_trading_day", "volume"];
 $sort = ["asc", "desc"];
 
 $params = [];
-$query = "SELECT id, symbol, open, low, high, price, change_percent, latest_trading_day, volume, is_api FROM `IT202-S25-Stocks`
+$query = "SELECT id, symbol, open, low, high, price, change_percent, latest_trading_day, volume, is_api FROM `IT202-M25-Stocks`
 WHERE 1=1";// used for easy append of other clauses
 if(count($_GET)> 0){
     $symbol = se($_GET, "symbol", "", false);

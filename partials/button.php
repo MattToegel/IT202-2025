@@ -21,5 +21,6 @@
     unset($_btn_type);
     unset($_btn_text);
     unset($_btn_color);
+    unset($_btn_onclick);
     ?>
 <?php endif; ?>
