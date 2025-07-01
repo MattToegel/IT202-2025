@@ -22,7 +22,7 @@ if (isset($_POST["symbol"])) {
     // Ideally only the table name should need to change for most queries
     //update data
     $company["id"] = $id; // add id to the company array for the update
-    
+
     try {
         $company = uppercaseSymbolCurrency([$company])[0];
         $r = update("IT202-M25-Companies", $company);
@@ -111,9 +111,7 @@ if ($company) {
     <h3>Edit Company</h3>
     <form method="POST">
         <?php foreach ($form as $field): ?>
-            <div class="mb-3">
-                <?php render_input($field); ?>
-            </div>
+            <?php render_input($field); ?>
         <?php endforeach; ?>
         <?php render_button(["text" => "Update", "type" => "submit"]); ?>
     </form>

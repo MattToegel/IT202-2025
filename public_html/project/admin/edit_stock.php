@@ -133,9 +133,7 @@ if ($stock) {
     <h3>Edit Stock</h3>
     <form method="POST">
         <?php foreach ($form as $field): ?>
-            <div class="mb-3">
-                <?php render_input($field); ?>
-            </div>
+            <?php render_input($field); ?>
         <?php endforeach; ?>
         <?php render_button(["text" => "Update", "type" => "submit"]); ?>
     </form>

@@ -4,7 +4,7 @@ require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location:" .get_url("landing.php")));
+    die(header("Location:" . get_url("landing.php")));
 }
 ?>
 
@@ -48,7 +48,7 @@ if (isset($_POST["action"])) {
 
         error_log("Transformed companies " . var_export($companies, true));
         try {
-            $r = insert("IT202-M25-Companies", $companies,["debug"=>true,"update_duplicate"=>true]);
+            $r = insert("IT202-M25-Companies", $companies, ["debug" => true, "update_duplicate" => true]);
             if ($r["lastInsertId"] || $r["rowCount"] > 0) {
                 flash("Inserted record " . $r["lastInsertId"], "success");
             } else {
@@ -118,9 +118,7 @@ $form = [
     </ul>
     <div id="fetch" class="tab-target">
         <form method="POST">
-            <div class="mb-3">
-                <?php render_input(["type" => "text", "name" => "keyword", "id" => "keyword", "label" => "Company keyword", "rules" => ["required" => true]]); ?>
-            </div>
+            <?php render_input(["type" => "text", "name" => "keyword", "id" => "keyword", "label" => "Company keyword", "rules" => ["required" => true]]); ?>
             <input type="hidden" name="action" value="fetch">
             <?php render_button(["text" => "Fetch", "type" => "submit"]); ?>
         </form>
@@ -129,9 +127,7 @@ $form = [
 
         <form method="POST">
             <?php foreach ($form as $field): ?>
-                <div class="mb-3">
-                    <?php render_input($field); ?>
-                </div>
+                <?php render_input($field); ?>
             <?php endforeach; ?>
             <input type="hidden" name="action" value="create">
             <?php render_button(["text" => "Create", "type" => "submit"]); ?>

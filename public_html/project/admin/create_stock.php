@@ -44,7 +44,7 @@ if (isset($_POST["action"])) {
     // the query building should work for all regular inserts
     try {
         $quote = uppercaseSymbolCurrency([$quote])[0];
-        $r = insert("IT202-M25-Stocks", $quote, ["update_duplicate"=>true]);
+        $r = insert("IT202-M25-Stocks", $quote, ["update_duplicate" => true]);
         if ($r["lastInsertId"]) {
             flash("Inserted record " . $r["lastInsertId"], "success");
         } else {
@@ -132,9 +132,7 @@ $form = [
     </ul>
     <div id="fetch" class="tab-target">
         <form method="POST">
-            <div class="mb-3">
-                <?php render_input(["type" => "text", "name" => "symbol", "id" => "symbol", "label" => "Stock Symbol", "rules" => ["required" => true]]); ?>
-            </div>
+            <?php render_input(["type" => "text", "name" => "symbol", "id" => "symbol", "label" => "Stock Symbol", "rules" => ["required" => true]]); ?>
             <input type="hidden" name="action" value="fetch">
             <?php render_button(["text" => "Fetch", "type" => "submit"]); ?>
         </form>
@@ -142,9 +140,7 @@ $form = [
     <div id="create" style="display: none;" class="tab-target">
         <form method="POST">
             <?php foreach ($form as $field): ?>
-                <div class="mb-3">
-                    <?php render_input($field); ?>
-                </div>
+                <?php render_input($field); ?>
             <?php endforeach; ?>
             <input type="hidden" name="action" value="create">
             <?php render_button(["text" => "Create", "type" => "submit"]); ?>

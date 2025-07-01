@@ -38,9 +38,7 @@ $form = [
     <h1>Create Role</h1>
     <form method="POST">
         <?php foreach ($form as $field): ?>
-            <div class="mb-3">
                 <?php render_input($field); ?>
-            </div>
         <?php endforeach; ?>
         <?php render_button(["text" => "Create Role", "type" => "submit"]); ?>
     </form>
