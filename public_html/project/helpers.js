@@ -1,4 +1,4 @@
-function flash (message = "", color = "info") {
+function flash(message = "", color = "info") {
     let flash = document.getElementById("flash");
     //create a div (or whatever wrapper we want)
     let outerDiv = document.createElement("div");
@@ -15,6 +15,6 @@ function flash (message = "", color = "info") {
     flash.appendChild(outerDiv);
 }
 
-function isValidPassword(val){
+function isValidPassword(val) {
     return val && val.length >= 8;
 }

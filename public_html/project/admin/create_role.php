@@ -4,10 +4,10 @@ require(__DIR__ . "/../../../partials/nav.php");
 
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: " . get_url("home.php")));
+    die(header("Location: " . get_url("landing.php")));
 }
 
-if (isset($_POST["name"]) && isset($_POST["description"])) {
+if (isset($_POST["name"],$_POST["description"])) {
     $name = se($_POST, "name", "", false);
     $desc = se($_POST, "description", "", false);
     if (empty($name)) {
@@ -22,14 +22,14 @@ if (isset($_POST["name"]) && isset($_POST["description"])) {
             if ($e->errorInfo[1] === 1062) {
                 flash("A role with this name already exists, please try another", "warning");
             } else {
-                flash("Unknown error occurred, please try again", "danger");
-                error_log(var_export($e->errorInfo, true));
+                flash("There was an error creating the role, please try again later", "danger");
+                error_log("Error creating role: " . var_export($e->errorInfo, true));
             }
         }
     }
 }
 ?>
-<h1>Create Role</h1>
+<h3>Create Role</h3>
 <form method="POST">
     <div>
         <label for="name">Name</label>
