@@ -29,7 +29,6 @@
         z-index: 1000;
         position: fixed;
         top: 1rem;
-
     }
 
     #flash:empty,
