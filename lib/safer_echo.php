@@ -1,21 +1,26 @@
 <?php
-
-/** Safe Echo Function
- * Takes in a value and passes it through htmlspecialchars()
- * or
- * Takes an array, a key, and default value and will return the value from the array if the key exists or the default value.
- * Can pass a flag to determine if the value will immediately echo or just return so it can be set to a variable
+/**
+ * Safe Echo Function
+ * - If given an array/object and a key, returns the value at that key (or $default if not set).
+ * - If given a scalar, returns it directly (or $default if not set).
+ * - By default, passes the result through htmlspecialchars() for XSS safety.
+ * - If $isEcho is true, echoes the value; otherwise, returns it.
+ * - If $raw is true, skips htmlspecialchars() (WARNING: this can expose your app to XSS if used with untrusted data).
+ *
+ * @param mixed $v Value, array, or object
+ * @param mixed $k Key (optional)
+ * @param mixed $default Default value if key not found
+ * @param bool $isEcho Whether to echo (true) or return (false)
+ * @param bool $raw If true, do NOT escape output (default: false)
+ * @return mixed|null
  */
-function se($v, $k = null, $default = "", $isEcho = true)
-{
-    if (is_array($v) && isset($k) && isset($v[$k])) {
+function se($v, $k = null, $default = "", $isEcho = true, $raw = false) {
+    if (is_array($v) && !is_null($k) && array_key_exists($k, $v)) {
         $returnValue = $v[$k];
-    } else if (is_object($v) && isset($k) && isset($v->$k)) {
+    } else if (is_object($v) && !is_null($k) && isset($v->$k)) {
         $returnValue = $v->$k;
     } else {
         $returnValue = $v;
-        //added 07-05-2021 to fix case where $k of $v isn't set
-        //this is to kep htmlspecialchars happy
         if (is_array($returnValue) || is_object($returnValue)) {
             $returnValue = $default;
         }
@@ -23,15 +28,14 @@ function se($v, $k = null, $default = "", $isEcho = true)
     if (!isset($returnValue)) {
         $returnValue = $default;
     }
+    $safeValue = $raw ? $returnValue : htmlspecialchars($returnValue, ENT_QUOTES);
     if ($isEcho) {
-        //https://www.php.net/manual/en/function.htmlspecialchars.php
-        echo htmlspecialchars($returnValue, ENT_QUOTES);
+        echo $safeValue;
     } else {
-        //https://www.php.net/manual/en/function.htmlspecialchars.php
-        return htmlspecialchars($returnValue, ENT_QUOTES);
+        return $safeValue;
     }
 }
-function safer_echo($v, $k = null, $default = "", $isEcho = true)
-{
-    return se($v, $k, $default, $isEcho);
+
+function safer_echo($v, $k = null, $default = "", $isEcho = true, $raw = false){
+    return se($v, $k, $default, $isEcho, $raw);
 }
