@@ -203,20 +203,31 @@ $form = [
         function validate(form) {
             let pw = form.newPassword.value;
             let con = form.confirmPassword.value;
+            let cp = form.currentPassword.value;
             let isValid = true;
             //TODO add other client side validation....
-            if (!isValidPassword(pw)) {
-                flash("Password must be at least 8 characters", "warning");
-                isValid = false;
-            }
+    
             //example of using flash via javascript
             //find the flash container, create a new element, appendChild
-            // NOTE: we'll extract the flash code to a function later
-            if (pw !== con) { // first JS validation example
-                flash("Password and Confirm password must match", "warning");
-                isValid = false;
+            if (pw && con && cp) {
+                if (!isValidPassword(pw)) {
+                    isValid = false;
+                    flash("New Password must be at least 8 characters long", "danger");
+                }
+                if (!isValidPassword(con)) {
+                    isValid = false;
+                    flash("Confirm Password must be at least 8 characters long", "danger");
+                }
+                if (!isValidPassword(cp)) {
+                    isValid = false;
+                    flash("Current Password must be at least 8 characters long", "danger");
+                }
+                if (pw !== con) {
+                    flash("Password and Confirm password must match", "warning");
+                    isValid = false;
+                }
             }
-            // returning false will prevent the form from submitting
+    
             return isValid;
         }
     </script>
