@@ -30,7 +30,6 @@
         position: fixed;
         top: 1rem;
 
-        background-color: gainsboro;
     }
 
     #flash:empty,

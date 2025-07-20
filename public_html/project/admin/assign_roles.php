@@ -89,26 +89,17 @@ if (isset($_POST["username"])) {
 <h3>Assign Roles</h3>
 <!-- search form -->
 <form method="POST">
-<<<<<<< HEAD
     <?php render_input(["type" => "text", "name" => "username", "id" => "username", "label" => "Username search", "rules" => ["required" => true]]); ?>
 
     <input type="hidden" name="action" value="fetch">
     <?php render_button(["text" => "Search", "type" => "submit"]); ?>
-=======
-    <input type="search" name="username" placeholder="Username search" value="<?php se($username, false); ?>" />
-    <input type="submit" value="Search" />
->>>>>>> Module07-Milestone2-DB-Helpers
 </form>
 <!-- empty toggle form, inputs will use the form attribute to associate with this form -->
 <form id="toggleForm" method="POST"></form>
 <?php if (isset($username) && !empty($username)) : ?>
     <input form="toggleForm" type="hidden" name="username" value="<?php se($username, false); ?>" />
 <?php endif; ?>
-<<<<<<< HEAD
 <table class="table">
-=======
-<table>
->>>>>>> Module07-Milestone2-DB-Helpers
     <thead>
         <th>Users</th>
         <th>Roles to Assign</th>
@@ -117,11 +108,7 @@ if (isset($_POST["username"])) {
         <tr>
             <td>
                 <!-- nested table for users -->
-<<<<<<< HEAD
                 <table class="table">
-=======
-                <table>
->>>>>>> Module07-Milestone2-DB-Helpers
                     <?php foreach ($users as $user) : ?>
                         <tr>
                             <td>
