@@ -198,7 +198,7 @@ if (isset($_POST["currentPassword"], $_POST["newPassword"], $_POST["confirmPassw
                 flash("Current Password must be at least 8 characters long", "danger");
             }
             if (pw !== con) {
-                flash("Password and Confrim password must match", "warning");
+                flash("Password and Confirm password must match", "warning");
                 isValid = false;
             }
         }
