@@ -6,20 +6,36 @@
     <?php $messages = getMessages(); ?>
     <?php if ($messages) : ?>
         <?php foreach ($messages as $msg) : ?>
+            <!-- bootstrap classes will be utilized when we add bootstrap in a future lesson-->
             <div class="row justify-content-center">
-                <div class="alert alert-<?php se($msg, 'color', 'info'); ?>" role="alert"><?php se($msg, "text"); ?></div>
+                <!-- color matches bootstrap color classes-->
+                <div class="alert alert-<?php se($msg, 'color', 'info'); ?>" role="alert">
+                    <?php se($msg, "text", ""); ?>
+                </div>
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
-<script>
-    //used to pretend the flash messages are below the first nav element
-    function moveMeUp(ele) {
-        let target = document.getElementsByTagName("nav")[0];
-        if (target) {
-            target.after(ele);
-        }
+
+<style>
+    #flash {
+        left: 50%;
+        transform: translateX(-50%);
+        width: auto;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        opacity: 0.9;
+        z-index: 1000;
+        position: fixed;
+        top: 1rem;
+
+        background-color: gainsboro;
     }
 
-    moveMeUp(document.getElementById("flash"));
-</script>
+    #flash:empty,
+    #flash:blank,
+    #flash:not(:has(*)):not(:empty) {
+        display: none;
+    }
+</style>
