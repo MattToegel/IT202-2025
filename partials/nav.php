@@ -24,7 +24,8 @@ session_start();
 require(__DIR__ . "/../lib/functions.php");
 ?>
 <!-- include css and js files -->
-<!-- Include Bootstrap CSS and JS before custom content so it can be reused or overriden -->
+<!-- Include Bootstrap CSS and JS before custom content so it can be reused or overridden -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
 <link rel="stylesheet" href="<?php get_url('styles.css', true); ?>">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
@@ -41,6 +42,9 @@ require(__DIR__ . "/../lib/functions.php");
                 <?php if (is_logged_in()) : ?>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="<?php get_url('landing.php', true); ?>">Landing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="<?php get_url('brokers.php', true); ?>">Brokers</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="<?php get_url('profile.php', true); ?>">Profile</a>
@@ -95,6 +99,18 @@ require(__DIR__ . "/../lib/functions.php");
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" aria-current="page" href="<?php get_url('admin/list_companies.php', true); ?>">List Companies</a>
+                            </li>
+                        </ul>
+                    </li>
+                <?php endif; ?>
+                <?php if (has_role("Admin")) : ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Manage Brokers
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="<?php get_url('admin/generate_broker.php', true); ?>">Generate Broker</a>
                             </li>
                         </ul>
                     </li>
