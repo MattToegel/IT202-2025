@@ -94,6 +94,17 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm"], $_POST["userna
         try {
             $stmt->execute([':email' => $email, ':password' => $hashed_password, ':username' => $username]);
             //echo "Successfully registered!<br>";
+            $id = $db->lastInsertId();
+            if ($id) {
+                try {
+                    // use fetch to generate the user_stats entry
+                    fetch_user_stats($id);
+                    change_points($id, 100);
+                    flash("Enjoy your welcome bonus of 100 points!", "success");
+                } catch (Exception $e) {
+                    error_log("Error assigning registration bonus: " . var_export($e, true));
+                }
+            }
             flash("Successfully registered! You can now log in.", "success");
         } catch (PDOException $e) {
             users_check_duplicate($e);
@@ -106,6 +117,6 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm"], $_POST["userna
 }
 ?>
 <?php
-require(__DIR__ . "/../../partials/flash.php");
+require(__DIR__ . "/../../partials/footer.php");
 reset_session();
 ?>

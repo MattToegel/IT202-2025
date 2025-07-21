@@ -28,15 +28,15 @@ if (isset($_POST["rarity"])) {
         <?php render_button(["text" => "Generate", "type" => "submit"]); ?>
     </form>
     <div id="brokerData">
-        <?php if(isset($broker)): ?>
+        <?php if (isset($broker)): ?>
             <h4>Broker Data</h4>
             <pre><?php var_export($broker); ?></pre>
-       
+
         <?php endif; ?>
     </div>
 </div>
 
 <?php
 //note we need to go up 1 more directory
-require_once(__DIR__ . "/../../../partials/flash.php");
+require_once(__DIR__ . "/../../../partials/footer.php");
 ?>
