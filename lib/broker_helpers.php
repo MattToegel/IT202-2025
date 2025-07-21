@@ -159,7 +159,7 @@ function generate_broker($_rarity = null) {
         // $rarity is generated so should be safe to inject
         // Select only one row per unique symbol before randomizing and limiting
         $subquery = "(SELECT * FROM `IT202-M25-Stocks` GROUP BY symbol ORDER BY id DESC)";
-        $stmt = $db->prepare("SELECT id, symbol, price, volume, low, high FROM $subquery AS t ORDER BY RAND() LIMIT $rarity");
+        $stmt = $db->prepare("SELECT id, symbol, price, volume, low, high, '1' as shares FROM $subquery AS t ORDER BY RAND() LIMIT $rarity");
         $stmt->execute();
         $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
         if ($r) {
