@@ -92,9 +92,25 @@ if ($broker_ids) {
         LEFT JOIN `IT202-M25-BrokerStocks` bs ON b.id = bs.broker_id
         LEFT JOIN `IT202-M25-Stocks` s ON bs.stock_id = s.id
         WHERE b.id IN ($in)";
+    // Sort logic
+    if (count($_GET) > 0) {
+
+        $column = se($_GET, "column", "", false);
+        if (empty($column) || !in_array($column, $allowed_columns)) {
+            $column = "created";
+        }
+
+        $order = se($_GET, "order", "", false);
+        if (empty($order) || !in_array($order, $sort)) {
+            $order = "desc";
+        }
+
+        $query .= " ORDER BY b.$column $order";
+    }
     $stmt = $db->prepare($query);
     $stmt->execute($broker_ids);
     $brokers = $stmt->fetchAll();
+    error_log("Raw Broker Data: " . var_export($brokers, true));
 
     // Aggregate
     foreach ($brokers as $row) {
