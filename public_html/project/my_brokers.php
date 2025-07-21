@@ -12,8 +12,9 @@ $params = [];
 // I want the limit to apply to the brokers and fetch the matched broker's stocks.
 
 // Step 1: Get broker IDs only
-$query = "SELECT b.id FROM `IT202-M25-Brokers` b WHERE 1=1";
-
+$query = "SELECT b.id FROM `IT202-M25-Brokers` b JOIN `IT202-M25-UserBrokers` ub on ub.broker_id = b.id WHERE 1=1";
+$query .= " AND user_id = :user_id"; // fetch for logged in user
+$params[":user_id"] = get_user_id();
 // Filtering logic
 if (count($_GET) > 0) {
     $name = se($_GET, "name", "", false);
@@ -175,7 +176,7 @@ $form = [
 ];
 ?>
 <div class="container-fluid">
-    <h1>Brokers</h1>
+    <h1>My Brokers</h1>
     <form>
         <div class="row">
             <?php foreach ($form as $field): ?>

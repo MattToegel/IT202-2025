@@ -115,8 +115,9 @@ if (isset($_POST["email"], $_POST["password"])) {
                             }
                             //save roles or empty array
                             $_SESSION["user"]["roles"] = isset($roles) ? $roles : [];
-
-                            die(header("Location: landing.php"));
+                            $stats = fetch_user_stats($user["id"]);
+                            $_SESSION["user"]["stats"] = $stats;
+                            redirect("landing.php");
                         } else {
                             //echo "Invalid password<br>";
                             $ambigify = true; // ambiguous login attempt
@@ -140,5 +141,5 @@ if (isset($_POST["email"], $_POST["password"])) {
 ?>
 
 <?php
-require(__DIR__ . "/../../partials/flash.php");
+require(__DIR__ . "/../../partials/footer.php");
 ?>

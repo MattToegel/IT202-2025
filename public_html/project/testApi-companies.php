@@ -79,7 +79,7 @@ if (isset($_GET["keyword"])) {
         <?php if (isset($result)) : ?>
             <?php foreach ($result as $stock) : ?>
                 <pre>
-                    <?php var_export($stock);?>
+                    <?php var_export($stock); ?>
                 </pre>
             <?php endforeach; ?>
         <?php endif; ?>

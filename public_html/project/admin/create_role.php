@@ -7,7 +7,7 @@ if (!has_role("Admin")) {
     die(header("Location: " . get_url("landing.php")));
 }
 
-if (isset($_POST["name"],$_POST["description"])) {
+if (isset($_POST["name"], $_POST["description"])) {
     $name = se($_POST, "name", "", false);
     $desc = se($_POST, "description", "", false);
     if (empty($name)) {
@@ -38,12 +38,12 @@ $form = [
     <h1>Create Role</h1>
     <form method="POST">
         <?php foreach ($form as $field): ?>
-                <?php render_input($field); ?>
+            <?php render_input($field); ?>
         <?php endforeach; ?>
         <?php render_button(["text" => "Create Role", "type" => "submit"]); ?>
     </form>
 </div>
 <?php
 //note we need to go up 1 more directory
-require_once(__DIR__ . "/../../../partials/flash.php");
+require_once(__DIR__ . "/../../../partials/footer.php");
 ?>
