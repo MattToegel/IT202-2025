@@ -1,4 +1,73 @@
+<style>
+    table.db-output-table {
+        border-collapse: collapse;
+        width: 95%;
+        max-width: 900px;
+        margin: 1.5em 0 2em 0;
+        font-size: 1rem;
+        background: #fff;
+    }
+
+    table.db-output-table th,
+    table.db-output-table td {
+        border: 1px solid #ccc;
+        padding: 8px 12px;
+    }
+
+    table.db-output-table th {
+        background: #eee;
+        font-weight: bold;
+    }
+
+    table.db-output-table tr:nth-child(even) {
+        background: #fafafa;
+    }
+
+    .success {
+        color: #008a00;
+        font-weight: bold;
+    }
+
+    .warn {
+        color: #e6b800;
+        font-weight: bold;
+    }
+
+    .error {
+        color: #c00;
+        font-weight: bold;
+    }
+
+    details summary {
+        cursor: pointer;
+    }
+
+    .db-output-table tbody tr:hover {
+        background: #ffffe0;
+    }
+
+    @media (max-width: 600px) {
+
+        table.db-output-table,
+        table.db-output-table th,
+        table.db-output-table td {
+            font-size: 0.95em;
+        }
+    }
+    .rate-limit-info {
+    color: #888;
+    font-size: 0.97em;
+    margin: 1em 0;
+}
+.rate-limit-warning {
+    color: #e6b800;
+    font-weight: bold;
+    margin: 1em 0;
+}
+
+</style>
 <h1>Database Helper Tool</h1>
+<h6>v2025.11.6</h6>
 <details>
     <summary>Info (About the tool)</summary>
     <p>The scope of this tool is to help us separate our structural queries into separate files for better organization.</p>
@@ -128,8 +197,7 @@ try {
     exit("Something went wrong");
 }
 
-function is_duplicate_warning($error)
-{
+function is_duplicate_warning($error) {
     // MySQL error code 1062 is duplicate entry, 1060 is duplicate column, 1061 is duplicate key name, 1068 is multiple primary key, etc.
     if (!is_array($error)) return false;
     if (isset($error[1]) && in_array($error[1], [1060, 1061, 1062, 1068])) return true;
@@ -221,7 +289,9 @@ function is_duplicate_warning($error)
 
 function rate_limit_check($limit = 10, $seconds = 60) {
     session_start();
-    if (!isset($_SESSION['db_tool_runs'])) { $_SESSION['db_tool_runs'] = []; }
+    if (!isset($_SESSION['db_tool_runs'])) {
+        $_SESSION['db_tool_runs'] = [];
+    }
     $_SESSION['db_tool_runs'] = array_filter(
         $_SESSION['db_tool_runs'],
         fn($ts) => $ts > time() - $seconds
