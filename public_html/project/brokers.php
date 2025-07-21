@@ -8,7 +8,11 @@ $allowed_columns = ["name", "rarity", "life", "attack", "defense", "power", "cre
 $sort = ["asc", "desc"];
 
 $params = [];
-$query = "SELECT id, name, rarity, life, attack, defense, power FROM `IT202-M25-Brokers` WHERE 1=1";
+// I need a two step query for this due to the relationship of Brokers and Stocks
+// I want the limit to apply to the brokers and fetch the matched broker's stocks.
+
+// Step 1: Get broker IDs only
+$query = "SELECT b.id FROM `IT202-M25-Brokers` b WHERE 1=1";
 
 // Filtering logic
 if (count($_GET) > 0) {
@@ -34,7 +38,7 @@ if (count($_GET) > 0) {
         $order = "desc";
     }
 
-    $query .= " ORDER BY $column $order";
+    $query .= " ORDER BY b.$column $order";
 }
 // outside of the $_GET check to always provide a limit
 $limit = se($_GET, "limit", 10, false);
@@ -45,7 +49,6 @@ if (!empty($limit) && is_numeric($limit)) {
     $query .= " LIMIT :limit";
     $params[":limit"] = $limit;
 }
-
 // Execute broker query
 $db = getDB();
 $stmt = $db->prepare($query);
@@ -62,29 +65,65 @@ foreach ($params as $key => $val) {
     $stmt->bindValue($key, $val, $type);
 }
 
-$brokers = [];
+$broker_ids = [];
 try {
     $stmt->execute();
     $r = $stmt->fetchAll();
     if ($r) {
-        $brokers = $r;
+        // Map to flat array of IDs
+        $broker_ids = array_map(fn($row) => $row["id"], $r);
     }
 } catch (PDOException $e) {
     error_log("Error fetching brokers: " . var_export($e, true));
     flash("Unhandled error occurred", "danger");
 }
 
+// step 2
 // Fetch each broker's stocks
+// Map each broker's stocks
 $results = [];
-foreach ($brokers as $broker) {
-    $stmt = $db->prepare("SELECT s.symbol, s.price, bs.shares 
-                          FROM `IT202-M25-BrokerStocks` bs 
-                          JOIN `IT202-M25-Stocks` s ON bs.stock_id = s.id 
-                          WHERE bs.broker_id = :id");
-    $stmt->execute([":id" => $broker["id"]]);
-    $stocks = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $results[] = ["broker" => $broker, "stocks" => $stocks];
+error_log("Broker Ids: " . var_export($broker_ids, true));
+if ($broker_ids) {
+    // Question marks are positional placeholders
+    $in = str_repeat('?,', count($broker_ids) - 1) . '?';
+    $query = "SELECT b.id, name, rarity, life, attack, defense, power, symbol, price, shares
+        FROM `IT202-M25-Brokers` b
+        LEFT JOIN `IT202-M25-BrokerStocks` bs ON b.id = bs.broker_id
+        LEFT JOIN `IT202-M25-Stocks` s ON bs.stock_id = s.id
+        WHERE b.id IN ($in)";
+    $stmt = $db->prepare($query);
+    $stmt->execute($broker_ids);
+    $brokers = $stmt->fetchAll();
+
+    // Aggregate
+    foreach ($brokers as $row) {
+        $id = $row["id"];
+        if (!isset($results[$id])) {
+            $results[$id] = [
+                "broker" => [
+                    "id" => $id,
+                    "name" => $row["name"],
+                    "rarity" => $row["rarity"],
+                    "life" => $row["life"],
+                    "attack" => $row["attack"],
+                    "defense" => $row["defense"],
+                    "power" => $row["power"]
+                ],
+                "stocks" => []
+            ];
+        }
+
+        if (!empty($row["symbol"])) {
+            $results[$id]["stocks"][] = [
+                "symbol" => $row["symbol"],
+                "price" => $row["price"],
+                "shares" => $row["shares"]
+            ];
+        }
+    }
+    $results = array_values($results); // reindex for rendering
 }
+
 
 // Build filter form
 $cols = array_map(fn($col) => [$col => $col], $allowed_columns);
