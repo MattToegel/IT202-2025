@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Renders a dynamic, Bootstrap-compatible HTML table using the provided `$data` configuration array.
  *
@@ -145,10 +146,11 @@
                                     <?php endif; ?>
                                     <?php if ($_post_self_form) : ?>
                                         <!-- TODO refactor -->
-                                        <form method="POST">
+                                        <!-- Module 9 - 10, fixed wonky layout applied to the form -->
+                                        <form method="POST" id="postSelfForm_<?php se($row, $_primary_key_column); ?>" style="display:none;">
                                             <input type="hidden" name="<?php se($_post_self_form, "name", $_primary_key_column); ?>" value="<?php se($row, $_primary_key_column); ?>" />
-                                            <input type="submit" class="<?php se($_post_self_form, "classes"); ?>" value="<?php se($_post_self_form, "label", "Submit"); ?>" />
                                         </form>
+                                        <input type="submit" form="postSelfForm_<?php se($row, $_primary_key_column); ?>" class="<?php se($_post_self_form, "classes"); ?>" value="<?php se($_post_self_form, "label", "Submit"); ?>" />
                                     <?php endif; ?>
                                 </div>
                             </td>

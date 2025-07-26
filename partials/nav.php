@@ -43,11 +43,16 @@ require(__DIR__ . "/../lib/functions.php");
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="<?php get_url('landing.php', true); ?>">Landing</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="<?php get_url('brokers.php', true); ?>">Brokers</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="<?php get_url('my_brokers.php', true); ?>">My Brokers</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Brokers
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" aria-current="page" href="<?php get_url('brokers.php', true); ?>">All Brokers</a></li>
+                            <li><a class="dropdown-item" aria-current="page" href="<?php get_url('my_brokers.php', true); ?>">My Brokers</a></li>
+                            <li><a class="dropdown-item" aria-current="page" href="<?php get_url('available_brokers.php', true); ?>">Available Brokers</a></li>
+                            <li><a class="dropdown-item" aria-current="page" href="<?php get_url('unavailable_brokers.php', true); ?>">Unavailable Brokers</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="<?php get_url('hire_random.php', true); ?>">Hire</a>

@@ -1,9 +1,36 @@
 <?php
-require(__DIR__ . "/../../partials/nav.php");
-if (is_logged_in(true)) {
-    error_log("Session data: " . var_export($_SESSION, true));
+//note we need to go up 1 more directory
+require(__DIR__ . "/../../../partials/nav.php");
+
+if (!has_role("Admin")) {
+    flash("You don't have permission to view this page", "warning");
+    die(header("Location: " . get_url("landing.php")));
 }
 store_current_route();
+
+// handle toggle
+if (isset($_POST["broker_id"])) {
+    $broker_id = se($_POST, "broker_id", -1, false);
+    if ($broker_id < 0) {
+        flash("Invalid broker id", "danger");
+        redirect(get_last_route());
+    }
+    $db = getDB();
+    $stmt = $db->prepare("UPDATE `IT202-M25-Brokers` SET is_active = !is_active WHERE id = :id");
+    try {
+        $stmt->execute([":id" => $broker_id]);
+        if ($stmt->rowCount() > 0) {
+            flash("Toggled broker with id $broker_id", "success");
+        } else {
+            flash("No changes made, broker may not exist or already toggled", "warning");
+        }
+    } catch (PDOException $e) {
+        flash("There was an error toggling the broker, please try again later", "danger");
+        error_log("Error toggling broker with id $broker_id: " . var_export($e->errorInfo, true));
+    }
+}
+// end handle toggle
+
 $allowed_columns = ["name", "rarity", "life", "attack", "defense", "power", "created"];
 $sort = ["asc", "desc"];
 
@@ -16,11 +43,11 @@ $params = [];
 $from = " FROM `IT202-M25-Brokers` b 
 LEFT JOIN `IT202-M25-UserBrokers` ub on b.id = ub.broker_id 
 LEFT JOIN Users u on u.id = ub.user_id";
-$query = "SELECT b.id";
+$query = "SELECT b.id, name, rarity, life, attack, defense, power, username, user_id, IF(b.is_active, 'active', 'inactive') as is_active, b.created";
 $count = "SELECT count(b.id) as total";
 $count_where = "";
-// filter for soft delete
-$where = " WHERE 1=1 AND b.is_active = 1";
+// not filtering for is_active here since this is an admin page
+$where = " WHERE 1=1";
 
 // Filtering logic
 if (count($_GET) > 0) {
@@ -38,6 +65,11 @@ if (count($_GET) > 0) {
     if (is_numeric($rarity)) {
         $where .= " AND rarity = :rarity";
         $params[":rarity"] = $rarity;
+    }
+    $status = se($_GET, "is_active", "", false);
+    if ($status !== "") {
+        $where .= " AND b.is_active = :is_active";
+        $params[":is_active"] = $status === "1" ? 1 : 0;
     }
 
     $column = se($_GET, "column", "", false);
@@ -64,29 +96,23 @@ if (!empty($limit) && is_numeric($limit)) {
     $params[":limit"] = (int)$limit;
 }
 // Execute broker query
-$broker_ids = selectAll("$query $from $where", $params);
-if ($broker_ids) {
-    $broker_ids = array_map(fn($row) => $row["id"], $broker_ids);
-}
-error_log("Broker Ids: " . var_export($broker_ids, true));
+$results = selectAll("$query $from $where", $params);
 
-// step 2
-$results = [];
-if ($broker_ids) {
-    // Question marks are positional placeholders
-    $in = str_repeat('?,', count($broker_ids) - 1) . '?';
-    $query = "SELECT b.id, name, rarity, life, attack, defense, power, symbol, price, shares, username, user_id
-        FROM `IT202-M25-Brokers` b
-        LEFT JOIN `IT202-M25-BrokerStocks` bs ON b.id = bs.broker_id
-        LEFT JOIN `IT202-M25-Stocks` s ON bs.stock_id = s.id
-        LEFT JOIN `IT202-M25-UserBrokers` ub on b.id = ub.broker_id
-        LEFT JOIN `Users` u on u.id = ub.user_id
-        WHERE b.id IN ($in)";
-    // Fetch each broker's stocks
-    $brokers = selectAll($query, $broker_ids);
-    // Map each broker's stocks
-    $results = aggregate_broker_data($brokers);
-}
+// Convert to render table
+$table = [
+    "data" => $results,
+    "ignored_columns" => ["user_id"],
+    "view_url" => get_url("broker.php"),
+    //"edit_url" => get_url("admin/edit_broker.php"),
+    "delete_url" => get_url("admin/delete_broker.php"),
+    "post_self_form" => [
+        "name" => "broker_id",
+        "label" => "Toggle Active",
+        "classes" => "btn btn-secondary"
+    ]
+];
+
+
 unset($params[":limit"]); // limit isn't used with the count query
 // Execute count query
 $count_results = selectAll("$count $from $count_where", $params, true)[0];
@@ -97,6 +123,11 @@ $result_stats = [
 ];
 
 // Build filter form
+$status = [
+    ["" => "All"],
+    ["1" => "Active"],
+    ["0" => "Inactive"]
+];
 $cols = array_map(fn($col) => [$col => $col], $allowed_columns);
 array_unshift($cols, ["" => "Select Column"]);
 
@@ -128,6 +159,14 @@ $form = [
     ],
     [
         "type" => "select",
+        "id" => "status",
+        "name" => "is_active",
+        "label" => "status",
+        "options" => $status,
+        "value" => se($_GET, "is_active", "", false),
+    ],
+    [
+        "type" => "select",
         "id" => "column",
         "name" => "column",
         "label" => "Column",
@@ -153,7 +192,7 @@ $form = [
 ];
 ?>
 <div class="container-fluid">
-    <h1>Brokers</h1>
+    <h1>Admin List Brokers</h1>
     <small>These brokers include hired and not hired results.</small>
     <form>
         <div class="row">
@@ -170,14 +209,8 @@ $form = [
     <?php if (count($results) == 0): ?>
         <p>No brokers found</p>
     <?php else: ?>
-        <div class="row">
-            <?php foreach ($results as $entry): ?>
-                <div class="col">
-                    <?php render_broker_card($entry); ?>
-                </div>
-            <?php endforeach; ?>
-        </div>
+        <?php render_table($table); ?>
     <?php endif; ?>
 </div>
 
-<?php require(__DIR__ . "/../../partials/footer.php"); ?>
+<?php require(__DIR__ . "/../../../partials/footer.php"); ?>

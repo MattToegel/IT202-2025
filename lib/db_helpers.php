@@ -21,8 +21,7 @@
  * @author Matt Toegel
  * @version 0.3 04/12/2025
  */
-function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate" => false, "columns_to_update" => []])
-{
+function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate" => false, "columns_to_update" => []]) {
     if (!is_array($data)) {
         throw new InvalidArgumentException("Data must be an array");
     }
@@ -169,8 +168,7 @@ function update(
     array $data,
     array $whereKeys = ["id"],
     array $opts = ["debug" => false]
-): array
-{
+): array {
     if (empty($table_name)) {
         throw new InvalidArgumentException("Table name cannot be empty");
     }
@@ -240,4 +238,47 @@ function update(
     } catch (Exception $e) {
         throw $e;
     }
+}
+
+function selectAll($query, $params, $debug = false) {
+    if ($debug) {
+        error_log("Query: $query");
+        error_log("Params: " . var_export($params, true));
+    }
+    try {
+        $db = getDB();
+        $stmt = $db->prepare($query);
+        $is_indexed = array_keys($params) === range(0, count($params) - 1);
+
+        if ($is_indexed) {
+            // Positional placeholders (?)
+            foreach ($params as $i => $val) {
+                $type = match (true) {
+                    is_int($val)  => PDO::PARAM_INT,
+                    is_bool($val)  => PDO::PARAM_BOOL,
+                    is_null($val)  => PDO::PARAM_NULL,
+                    default        => PDO::PARAM_STR,
+                };
+                $stmt->bindValue($i + 1, $val, $type); // 1-based for positional
+            }
+        } else {
+            // Named placeholders (:name)
+            foreach ($params as $key => $val) {
+                $type = match (true) {
+                    is_int($val)   => PDO::PARAM_INT,
+                    is_bool($val)  => PDO::PARAM_BOOL,
+                    is_null($val)  => PDO::PARAM_NULL,
+                    default        => PDO::PARAM_STR,
+                };
+                $stmt->bindValue($key, $val, $type);
+            }
+        }
+        $stmt->execute();
+        return $stmt->fetchAll();
+    } catch (PDOException $e) {
+        error_log("Error running query: " . var_export($e, true));
+    } catch (Exception $e) {
+        error_log("Unhandled error running query: " . var_export($e, true));
+    }
+    return null;
 }

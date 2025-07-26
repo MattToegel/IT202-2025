@@ -347,3 +347,84 @@ function refresh_broker($id) {
     }
     return $broker;
 }
+
+function aggregate_broker_data($brokers) {
+    // Aggregate
+    foreach ($brokers as $row) {
+        $id = $row["id"];
+        if (!isset($results[$id])) {
+            $results[$id] = [
+                "broker" => [
+                    "id" => $id,
+                    "name" => $row["name"],
+                    "rarity" => $row["rarity"],
+                    "life" => $row["life"],
+                    "attack" => $row["attack"],
+                    "defense" => $row["defense"],
+                    "power" => $row["power"]
+                ],
+                "stocks" => []
+            ];
+            if (isset($row["user_id"])) {
+                $results[$id]["broker"]["user_id"] = $row["user_id"];
+            }
+            if (isset($row["username"])) {
+                $results[$id]["broker"]["username"] = $row["username"];
+            }
+        }
+
+        if (!empty($row["symbol"])) {
+            $results[$id]["stocks"][] = [
+                "symbol" => $row["symbol"],
+                "price" => $row["price"],
+                "shares" => $row["shares"]
+            ];
+        }
+    }
+    $results = array_values($results); // reindex for rendering
+    return $results;
+}
+
+function get_cost($broker) {
+    $cost = 100;
+    // TODO more sophisticated formula
+    if (isset($broker["power"])) {
+        $cost = ceil($broker["power"] / 100) * 100;
+    }
+    return $cost;
+}
+/**
+ * Hire a broker for the user
+ * @param int $user_id
+ * @param int $broker_id
+ * @param int $cost (positive integer)
+ */
+function hire($user_id, $broker_id, $cost) {
+    if ($cost < 0) {
+        $cost *= -1;
+    }
+    $purchased = false;
+    try {
+        change_points($user_id, -$cost);
+        $purchased = true;
+    } catch (Exception $e) {
+        error_log("Error changing points: " . var_export($e, true));
+        flash("Error hiring broker", "danger");
+    }
+    if ($purchased) {
+        $r = insert("IT202-M25-UserBrokers", [
+            "user_id" => $user_id,
+            "broker_id" => $broker_id
+        ]);
+        if (isset($r["lastInsertId"]) && $r["lastInsertId"] > 0) {
+            flash("Successfully hired broker", "success");
+        } else {
+            try {
+                change_points($user_id, $cost);
+                flash("Error hiring broker, points refunded", "danger");
+            } catch (Exception $e) {
+                error_log("Error refunding points " . var_export($e, true));
+            }
+        }
+    }
+}

@@ -3,7 +3,7 @@ require(__DIR__ . "/../../partials/nav.php");
 if (is_logged_in(true)) {
     error_log("Session data: " . var_export($_SESSION, true));
 }
-
+store_current_route();
 $allowed_columns = ["name", "rarity", "life", "attack", "defense", "power", "created"];
 $sort = ["asc", "desc"];
 
@@ -12,20 +12,24 @@ $params = [];
 // I want the limit to apply to the brokers and fetch the matched broker's stocks.
 
 // Step 1: Get broker IDs only
-$query = "SELECT b.id FROM `IT202-M25-Brokers` b JOIN `IT202-M25-UserBrokers` ub on ub.broker_id = b.id WHERE 1=1";
-$query .= " AND user_id = :user_id"; // fetch for logged in user
+$from = "FROM `IT202-M25-Brokers` b JOIN `IT202-M25-UserBrokers` ub on ub.broker_id = b.id";
+$query = "SELECT b.id ";
+$count = "SELECT count(b.id) as total";
+$count_where = "";
+// filter for soft delete
+$where = " WHERE 1 = 1 AND b.is_active = 1 AND user_id = :user_id";
 $params[":user_id"] = get_user_id();
 // Filtering logic
 if (count($_GET) > 0) {
     $name = se($_GET, "name", "", false);
     if (!empty($name)) {
-        $query .= " AND name LIKE :name";
+        $where .= " AND name LIKE :name";
         $params[":name"] = "%$name%";
     }
 
     $rarity = se($_GET, "rarity", "", false);
     if (is_numeric($rarity)) {
-        $query .= " AND rarity = :rarity";
+        $where .= " AND rarity = :rarity";
         $params[":rarity"] = $rarity;
     }
 
@@ -39,92 +43,54 @@ if (count($_GET) > 0) {
         $order = "desc";
     }
 
-    $query .= " ORDER BY b.$column $order";
+    $where .= " ORDER BY b.$column $order";
 }
+
 // outside of the $_GET check to always provide a limit
 $limit = se($_GET, "limit", 10, false);
 if (!empty($limit) && is_numeric($limit)) {
     if ($limit < 1 || $limit > 100) {
         $limit = 10;
     }
-    $query .= " LIMIT :limit";
-    $params[":limit"] = $limit;
+    $count_where = $where; // count ignores limit
+    $where .= " LIMIT :limit";
+    // better practice to explicitly cast than to use is_numeric() for PDO binding
+    $params[":limit"] = (int)$limit;
 }
 // Execute broker query
-$db = getDB();
-$stmt = $db->prepare($query);
-error_log("Broker Query: $query");
-error_log("Params: " . var_export($params, true));
-
-foreach ($params as $key => $val) {
-    $type = match (true) {
-        is_numeric($val) => PDO::PARAM_INT,
-        is_bool($val) => PDO::PARAM_BOOL,
-        is_null($val) => PDO::PARAM_NULL,
-        default => PDO::PARAM_STR,
-    };
-    $stmt->bindValue($key, $val, $type);
+$broker_ids = selectAll("$query $from $where", $params);
+if ($broker_ids) {
+    $broker_ids = array_map(fn($row) => $row["id"], $broker_ids);
 }
-
-$broker_ids = [];
-try {
-    $stmt->execute();
-    $r = $stmt->fetchAll();
-    if ($r) {
-        // Map to flat array of IDs
-        $broker_ids = array_map(fn($row) => $row["id"], $r);
-    }
-} catch (PDOException $e) {
-    error_log("Error fetching brokers: " . var_export($e, true));
-    flash("Unhandled error occurred", "danger");
-}
+error_log("Broker Ids: " . var_export($broker_ids, true));
 
 // step 2
-// Fetch each broker's stocks
-// Map each broker's stocks
 $results = [];
-error_log("Broker Ids: " . var_export($broker_ids, true));
+// Execute Broker/Stock query
 if ($broker_ids) {
     // Question marks are positional placeholders
     $in = str_repeat('?,', count($broker_ids) - 1) . '?';
-    $query = "SELECT b.id, name, rarity, life, attack, defense, power, symbol, price, shares
+    // included user_id so the render_broker_card doesn't show the hire button
+    $query = "SELECT b.id, name, rarity, life, attack, defense, power, symbol, price, shares, user_id
         FROM `IT202-M25-Brokers` b
-        LEFT JOIN `IT202-M25-BrokerStocks` bs ON b.id = bs.broker_id
-        LEFT JOIN `IT202-M25-Stocks` s ON bs.stock_id = s.id
+        JOIN `IT202-M25-BrokerStocks` bs ON b.id = bs.broker_id
+        JOIN `IT202-M25-Stocks` s ON bs.stock_id = s.id
+        JOIN `IT202-M25-UserBrokers` ub on b.id = ub.broker_id
         WHERE b.id IN ($in)";
-    $stmt = $db->prepare($query);
-    $stmt->execute($broker_ids);
-    $brokers = $stmt->fetchAll();
-
-    // Aggregate
-    foreach ($brokers as $row) {
-        $id = $row["id"];
-        if (!isset($results[$id])) {
-            $results[$id] = [
-                "broker" => [
-                    "id" => $id,
-                    "name" => $row["name"],
-                    "rarity" => $row["rarity"],
-                    "life" => $row["life"],
-                    "attack" => $row["attack"],
-                    "defense" => $row["defense"],
-                    "power" => $row["power"]
-                ],
-                "stocks" => []
-            ];
-        }
-
-        if (!empty($row["symbol"])) {
-            $results[$id]["stocks"][] = [
-                "symbol" => $row["symbol"],
-                "price" => $row["price"],
-                "shares" => $row["shares"]
-            ];
-        }
-    }
-    $results = array_values($results); // reindex for rendering
+    // Fetch each broker's stocks
+    $brokers = selectAll($query, $broker_ids);
+    // Map each broker's stocks
+    $results = aggregate_broker_data($brokers);
 }
 
+unset($params[":limit"]); // limit isn't used with the count query
+// Execute count query
+$count_results = selectAll("$count $from $count_where", $params, true)[0];
+// transform result data for results_header.php
+$result_stats = [
+    "current" => count($results),
+    "total" => $count_results["total"]
+];
 
 // Build filter form
 $cols = array_map(fn($col) => [$col => $col], $allowed_columns);
@@ -177,6 +143,7 @@ $form = [
 ?>
 <div class="container-fluid">
     <h1>My Brokers</h1>
+    <small>These brokers are hired by you.</small>
     <form>
         <div class="row">
             <?php foreach ($form as $field): ?>
@@ -188,7 +155,7 @@ $form = [
         <?php render_button(["text" => "Search", "type" => "submit"]); ?>
         <a href="?" class="btn btn-secondary">Reset</a>
     </form>
-
+    <?php results_header($result_stats); ?>
     <?php if (count($results) == 0): ?>
         <p>No brokers found</p>
     <?php else: ?>

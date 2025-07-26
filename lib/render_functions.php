@@ -7,36 +7,33 @@
  */
 
 
-function render_input($data = array())
-{
+function render_input($data = array()) {
     include(__dir__ . "/../partials/input_field.php");
 }
 
-function render_button($data = array())
-{
+function render_button($data = array()) {
     include(__DIR__ . "/../partials/button.php");
 }
 
-function render_table($data = array())
-{
+function render_table($data = array()) {
     include(__DIR__ . "/../partials/table.php");
 }
 
-function render_stock_card($data = array())
-{
+function render_stock_card($data = array()) {
     include(__DIR__ . "/../partials/stock_card.php");
 }
 
-function render_broker_card($data = array())
-{
+function render_broker_card($data = array()) {
     include(__DIR__ . "/../partials/broker_card.php");
 }
 
-function render_stars($num)
-{
+function render_stars($num) {
     $stars = '';
     for ($i = 0; $i < $num; $i++) {
         $stars .= '<i class="text-warning bi bi-star-fill"></i> ';
     }
     return $stars;
+}
+function results_header($result_stats) {
+    include(__DIR__ . "/../partials/results_header.php");
 }

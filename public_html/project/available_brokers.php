@@ -13,14 +13,12 @@ $params = [];
 
 // Step 1: Get broker IDs only
 // Note: I can't join on stocks here otherwise it'll give me incorrect results
-$from = " FROM `IT202-M25-Brokers` b 
-LEFT JOIN `IT202-M25-UserBrokers` ub on b.id = ub.broker_id 
-LEFT JOIN Users u on u.id = ub.user_id";
+$from = " FROM `IT202-M25-Brokers` b";
 $query = "SELECT b.id";
 $count = "SELECT count(b.id) as total";
 $count_where = "";
 // filter for soft delete
-$where = " WHERE 1=1 AND b.is_active = 1";
+$where = " WHERE 1=1 AND b.is_active = 1 AND NOT EXISTS (select id from `IT202-M25-UserBrokers` ub WHERE ub.broker_id = b.id)";
 
 // Filtering logic
 if (count($_GET) > 0) {
@@ -29,11 +27,7 @@ if (count($_GET) > 0) {
         $where .= " AND name LIKE :name";
         $params[":name"] = "%$name%";
     }
-    $username = se($_GET, "username", "", false);
-    if (!empty($username)) {
-        $where .= " AND u.username LIKE :username";
-        $params[":username"] = "%$username%";
-    }
+
     $rarity = se($_GET, "rarity", "", false);
     if (is_numeric($rarity)) {
         $where .= " AND rarity = :rarity";
@@ -77,10 +71,8 @@ if ($broker_ids) {
     $in = str_repeat('?,', count($broker_ids) - 1) . '?';
     $query = "SELECT b.id, name, rarity, life, attack, defense, power, symbol, price, shares, username, user_id
         FROM `IT202-M25-Brokers` b
-        LEFT JOIN `IT202-M25-BrokerStocks` bs ON b.id = bs.broker_id
-        LEFT JOIN `IT202-M25-Stocks` s ON bs.stock_id = s.id
-        LEFT JOIN `IT202-M25-UserBrokers` ub on b.id = ub.broker_id
-        LEFT JOIN `Users` u on u.id = ub.user_id
+        JOIN `IT202-M25-BrokerStocks` bs ON b.id = bs.broker_id
+        JOIN `IT202-M25-Stocks` s ON bs.stock_id = s.id
         WHERE b.id IN ($in)";
     // Fetch each broker's stocks
     $brokers = selectAll($query, $broker_ids);
@@ -110,13 +102,6 @@ $form = [
         "name" => "name",
         "label" => "Broker Name",
         "value" => se($_GET, "name", "", false),
-    ],
-    [
-        "type" => "text",
-        "id" => "username",
-        "name" => "username",
-        "label" => "Username",
-        "value" => se($_GET, "username", "", false),
     ],
     [
         "type" => "number",
@@ -153,8 +138,8 @@ $form = [
 ];
 ?>
 <div class="container-fluid">
-    <h1>Brokers</h1>
-    <small>These brokers include hired and not hired results.</small>
+    <h1>Available Brokers</h1>
+    <small>These brokers are not hired by anyone.</small>
     <form>
         <div class="row">
             <?php foreach ($form as $field): ?>

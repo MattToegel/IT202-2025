@@ -14,8 +14,8 @@ $params = [];
 // Step 1: Get broker IDs only
 // Note: I can't join on stocks here otherwise it'll give me incorrect results
 $from = " FROM `IT202-M25-Brokers` b 
-LEFT JOIN `IT202-M25-UserBrokers` ub on b.id = ub.broker_id 
-LEFT JOIN Users u on u.id = ub.user_id";
+JOIN `IT202-M25-UserBrokers` ub on b.id = ub.broker_id 
+JOIN Users u on u.id = ub.user_id";
 $query = "SELECT b.id";
 $count = "SELECT count(b.id) as total";
 $count_where = "";
@@ -77,10 +77,10 @@ if ($broker_ids) {
     $in = str_repeat('?,', count($broker_ids) - 1) . '?';
     $query = "SELECT b.id, name, rarity, life, attack, defense, power, symbol, price, shares, username, user_id
         FROM `IT202-M25-Brokers` b
-        LEFT JOIN `IT202-M25-BrokerStocks` bs ON b.id = bs.broker_id
-        LEFT JOIN `IT202-M25-Stocks` s ON bs.stock_id = s.id
-        LEFT JOIN `IT202-M25-UserBrokers` ub on b.id = ub.broker_id
-        LEFT JOIN `Users` u on u.id = ub.user_id
+        JOIN `IT202-M25-BrokerStocks` bs ON b.id = bs.broker_id
+        JOIN `IT202-M25-Stocks` s ON bs.stock_id = s.id
+        JOIN `IT202-M25-UserBrokers` ub on b.id = ub.broker_id
+        JOIN `Users` u on u.id = ub.user_id
         WHERE b.id IN ($in)";
     // Fetch each broker's stocks
     $brokers = selectAll($query, $broker_ids);
@@ -153,8 +153,8 @@ $form = [
 ];
 ?>
 <div class="container-fluid">
-    <h1>Brokers</h1>
-    <small>These brokers include hired and not hired results.</small>
+    <h1>Unavailable Brokers</h1>
+    <small>These brokers are already hired by users.</small>
     <form>
         <div class="row">
             <?php foreach ($form as $field): ?>
