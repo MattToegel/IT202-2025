@@ -97,7 +97,17 @@ if (!empty($limit) && is_numeric($limit)) {
 }
 // Execute broker query
 $results = selectAll("$query $from $where", $params);
-
+$results = array_map(function ($row) {
+    // Convert user_id to a link to the profile
+    if (isset($row["user_id"])) {
+        $url = get_url("profile.php?id=" . se($row, "user_id", -1, false));
+        $username = se($row, "username", "N/A", false);
+        $row["profile"] = "<a href=\"$url\">$username</a>";
+    } else {
+        $row["profile"] = "N/A";
+    }
+    return $row;
+}, $results);
 // Convert to render table
 $table = [
     "data" => $results,
@@ -109,7 +119,8 @@ $table = [
         "name" => "broker_id",
         "label" => "Toggle Active",
         "classes" => "btn btn-secondary"
-    ]
+    ],
+    "html_columns" => ["profile"],
 ];
 
 

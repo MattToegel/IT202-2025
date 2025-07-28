@@ -20,7 +20,9 @@ if (!isset($data["broker"]) || !isset($data["stocks"])) {
             </h6>
             <?php if (isset($broker["username"])): ?>
                 <h6 class="card-subtitle mb-2 text-muted">
-                    Hired by: <?php se($broker, "username"); ?> <?php echo (get_user_id() == se($broker, "user_id", -1, false) ? "(You)" : ""); ?>
+                    Hired by: <a href="<?php get_url("profile.php?id=", true);
+                                        se($broker, "user_id"); ?>"><?php se($broker, "username"); ?></a>
+                    <?php echo (get_user_id() == se($broker, "user_id", -1, false) ? "(You)" : ""); ?>
                 </h6>
             <?php endif; ?>
             <div class="card-text">
