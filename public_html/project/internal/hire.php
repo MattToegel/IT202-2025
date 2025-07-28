@@ -16,6 +16,7 @@ if (isset($_POST["broker_id"])) {
     $query = "SELECT power FROM `IT202-M25-Brokers` where id = :broker_id";
     $broker = selectAll($query, [":broker_id" => $broker_id]);
     if ($broker && count($broker) > 0) {
+        $broker = $broker[0];
         $cost = get_cost($broker);
         hire($user_id, $broker_id, $cost);
     }
