@@ -13,7 +13,7 @@ if (strpos($domain, ":")) {
 if ($domain != "localhost") {
     session_set_cookie_params([
         "lifetime" => 60 * 60, // this is cookie lifetime, not session lifetime
-        "path" => "/project", // path to restrict cookie to; match your project folder (case sensitive)
+        "path" => $BASE_PATH, // path to restrict cookie to; match your project folder (case sensitive)
         "domain" => $domain, // domain to restrict cookie to
         "secure" => true, // https only
         "httponly" => true, // javascript can't access
