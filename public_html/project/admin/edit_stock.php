@@ -32,7 +32,7 @@ if (isset($_POST["symbol"])) {
             $query .= ",";
         }
         //be sure $k is trusted as this is a source of sql injection
-        $query .= "$k=:$k";
+        $query .= "`$k`=:$k";
         $params[":$k"] = $v;
     }
 
