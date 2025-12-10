@@ -10,6 +10,7 @@ if (isset($_POST["hire"])) {
     error_log("Generating broker");
     $broker = generate_broker();
     if ($broker) {
+        $broker["user_id"] = get_user_id();
         hire(get_user_id(), $broker["id"], 100);
     }
 }
