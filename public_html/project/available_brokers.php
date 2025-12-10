@@ -73,6 +73,7 @@ if ($broker_ids) {
         FROM `IT202-M25-Brokers` b
         JOIN `IT202-M25-BrokerStocks` bs ON b.id = bs.broker_id
         JOIN `IT202-M25-Stocks` s ON bs.stock_id = s.id
+        JOIN `Users` u ON u.id = bs.user_id
         WHERE b.id IN ($in)";
     // Fetch each broker's stocks
     $brokers = selectAll($query, $broker_ids);
