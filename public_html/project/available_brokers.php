@@ -69,7 +69,7 @@ $results = [];
 if ($broker_ids) {
     // Question marks are positional placeholders
     $in = str_repeat('?,', count($broker_ids) - 1) . '?';
-    $query = "SELECT b.id, name, rarity, life, attack, defense, power, symbol, price, shares, username, bs.user_id
+    $query = "SELECT b.id, name, rarity, life, attack, defense, power, symbol, price, shares, username, u.id as user_id
         FROM `IT202-M25-Brokers` b
         JOIN `IT202-M25-BrokerStocks` bs ON b.id = bs.broker_id
         JOIN `IT202-M25-Stocks` s ON bs.stock_id = s.id
