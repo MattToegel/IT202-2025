@@ -350,7 +350,9 @@ function refresh_broker($id) {
 
 function aggregate_broker_data($brokers) {
     // Aggregate
+    $results = [];
     foreach ($brokers as $row) {
+        error_log("Broker Row : " . var_export($row, true));
         $id = $row["id"];
         if (!isset($results[$id])) {
             $results[$id] = [

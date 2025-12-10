@@ -69,16 +69,16 @@ $results = [];
 if ($broker_ids) {
     // Question marks are positional placeholders
     $in = str_repeat('?,', count($broker_ids) - 1) . '?';
-    $query = "SELECT b.id, name, rarity, life, attack, defense, power, symbol, price, shares, username, u.id as user_id
+    $query = "SELECT b.id, name, rarity, life, attack, defense, power, symbol, price, shares, null as username,   null as user_id
         FROM `IT202-M25-Brokers` b
         JOIN `IT202-M25-BrokerStocks` bs ON b.id = bs.broker_id
         JOIN `IT202-M25-Stocks` s ON bs.stock_id = s.id
-        JOIN `Users` u ON u.id = bs.user_id
         WHERE b.id IN ($in)";
     // Fetch each broker's stocks
     $brokers = selectAll($query, $broker_ids);
     // Map each broker's stocks
     $results = aggregate_broker_data($brokers);
+   // error_log("Dumb brokers" . var_export($brokers, true));
 }
 unset($params[":limit"]); // limit isn't used with the count query
 // Execute count query
