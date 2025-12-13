@@ -107,6 +107,9 @@ session_start();
                             <li class="nav-item">
                                 <a class="nav-link active" aria-current="page" href="<?php echo get_url('admin/list_companies.php'); ?>">List Companies</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="<?php echo get_url('admin/assign_companies.php'); ?>">Assign Companies</a>
+                            </li>
                         </ul>
                     </li>
                 <?php endif; ?>
