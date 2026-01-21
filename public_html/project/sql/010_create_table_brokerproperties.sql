@@ -1,0 +1,7 @@
+CREATE TABLE `IT202-S25-BrokerProperties`(
+    `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `property` varchar(50) NOT NULL,
+    `value` FLOAT NOT NULL,
+    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)
