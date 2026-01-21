@@ -1,5 +1,5 @@
 # Use the official PHP 8.2 image with Apache
-FROM php:8.2-apache
+FROM php:8.5-apache
 
 # 1. Install system dependencies for cURL and PDO
 RUN apt-get update && apt-get install -y \
