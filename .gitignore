@@ -3,4 +3,10 @@ vendor/
 .env
 .vscode
 .DS_Store
+
+*_solution*
+test.php
+docs/
+
 _docs/
+d-render-check
