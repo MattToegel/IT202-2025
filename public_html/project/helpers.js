@@ -8,7 +8,7 @@ function flash(message = "", color = "info") {
     //apply the CSS (these are bootstrap classes which we'll learn later)
     innerDiv.className = `alert alert-${color}`;
     //set the content
-    innerDiv.innerText = message;
+    innerDiv.innerText = `(js) ${message}`;
 
     outerDiv.appendChild(innerDiv);
     //add the element to the DOM (if we don't it merely exists in memory)
