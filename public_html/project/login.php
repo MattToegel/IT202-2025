@@ -1,4 +1,5 @@
 <?php
+ob_start();// Temp fix to resolve output buffer issues that send the header() early that cause issues with the header("Location:...") below
 require(__DIR__ . "/../../partials/nav.php");
 ?>
 <h3>Login</h3>
