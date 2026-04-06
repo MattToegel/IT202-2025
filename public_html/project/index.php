@@ -1,4 +1,3 @@
-
 <style>
     /* TODO can replace the CSS as you wish or replace with bootstrap in Milestone2+ topics */
 .jumbotron {
@@ -44,6 +43,7 @@
     color: #fff;
 }
 </style>
+<?php require(__DIR__ . "/lib/functions.php"); ?>
 <div class="jumbotron">
     <!-- TODO replace your name -->
     <h1 class="display-4">Welcome to Matt's project</h1>
