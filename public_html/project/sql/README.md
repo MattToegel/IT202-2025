@@ -3,6 +3,7 @@
 ### Just have your structural/setup .sql files here and run the init_db.php in the browser
 
 - Usage
+ - Add structural .sql files here 
  - Make sure you prefix the files so they sort in the exact order they should execute
     - Recommend left padding 3 digit numbers (i.e., 001, 002, 003, etc)
  - Make sure the files end in .sql
